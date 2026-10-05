@@ -1,0 +1,2062 @@
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VERA — Le notizie, pensate per te</title>
+<meta name="description" content="VERA è la tua home mista: briefing audio in alto e card combinate open data + rassegna internazionale, con fonti, licenze e trasparenza sempre visibili.">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['"Plus Jakarta Sans"','ui-sans-serif','system-ui','sans-serif'],
+        serif: ['Fraunces','ui-serif','Georgia','serif'],
+        mono: ['"JetBrains Mono"','ui-monospace','monospace']
+      },
+      colors: {
+        ink: '#1E2A25',
+        cream: '#FBF9F7',
+        sand: '#F5F0E9',
+        sage: {50:'#F2F8F4',100:'#E4F0E9',200:'#C9E2D5',300:'#A8D3BE',400:'#76B899',500:'#3E9270',600:'#12795A',700:'#0D6047',800:'#0C4A38',900:'#123026'},
+        clay: '#C2664A',
+        peach: '#FFE4D1',
+        lilac: '#E9E2FF',
+        skysoft: '#DDEBFF',
+        mint: '#DDF0E6',
+        amber2: '#D9963F'
+      },
+      boxShadow: {
+        soft: '0 1px 2px rgba(30,42,37,.05), 0 18px 40px -20px rgba(30,42,37,.14)',
+        card: '0 2px 6px rgba(30,42,37,.05), 0 24px 52px -24px rgba(30,42,37,.16)',
+        lift: '0 2px 6px rgba(30,42,37,.06), 0 38px 80px -30px rgba(30,42,37,.22)',
+        glow: '0 22px 48px -22px rgba(18,121,90,.55)',
+        lisa: '0 10px 30px -12px rgba(18,121,90,.18), 0 20px 60px -30px rgba(217,150,63,.18)'
+      }
+    }
+  }
+}
+</script>
+<style>
+html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#FBF9F7;color:#1E2A25;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+::selection{background:#C9E2D5;color:#123026}
+::-webkit-scrollbar{width:11px;height:11px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#E7DCCF;border-radius:99px;border:3px solid #FBF9F7}
+.serif-title{font-family:'Fraunces',serif;font-optical-sizing:auto}
+.mono{font-family:'JetBrains Mono',monospace}
+.reveal{opacity:0;transform:translateY(24px);filter:blur(8px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1),filter .9s ease;transition-delay:var(--d,0ms)}
+.reveal.in{opacity:1;transform:none;filter:blur(0)}
+.kin-line{overflow:hidden;display:block;padding-bottom:.08em}
+.kin-word{display:inline-block;transform:translateY(112%) rotate(2deg);opacity:0;animation:kinUp 1s cubic-bezier(.16,1,.3,1) forwards;animation-delay:var(--d,0ms);white-space:pre}
+@keyframes kinUp{to{transform:translateY(0) rotate(0);opacity:1}}
+.hero-glow{position:absolute;inset:0;pointer-events:none;background:radial-gradient(700px 420px at var(--mx,50%) var(--my,20%),rgba(168,211,190,.28),transparent 65%),radial-gradient(560px 400px at 92% 8%,rgba(255,228,209,.55),transparent 62%),radial-gradient(680px 440px at 8% 95%,rgba(233,226,255,.5),transparent 64%),radial-gradient(520px 360px at 20% 10%,rgba(221,235,255,.45),transparent 62%)}
+.grain::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.05;border-radius:inherit;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");mix-blend-mode:multiply}
+.blob{position:absolute;border-radius:9999px;filter:blur(60px);pointer-events:none}
+.wave-bar{width:4px;border-radius:99px;min-height:6px;background:linear-gradient(180deg,#76B899,#12795A);transform-origin:center;transition:height .18s ease,opacity .3s ease;opacity:.5}
+.is-playing .wave-bar{animation:soundWave 1.15s ease-in-out infinite alternate;opacity:1}
+@keyframes soundWave{0%{height:7px}50%{height:30px}100%{height:12px}}
+.wave-bar:nth-child(2n){animation-delay:.12s}
+.wave-bar:nth-child(3n){animation-delay:.28s}
+.wave-bar:nth-child(4n){animation-delay:.06s}
+.wave-bar:nth-child(5n){animation-delay:.4s}
+.wave-bar:nth-child(7n){animation-delay:.18s}
+.ticker-track{display:flex;width:max-content;animation:marquee 70s linear infinite}
+.ticker:hover .ticker-track{animation-play-state:paused}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ticker-fade{-webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent)}
+.chip{transition:transform .28s cubic-bezier(.16,1,.3,1),background-color .22s,color .22s,border-color .22s,box-shadow .28s}
+.chip:hover{transform:translateY(-2px)}
+.chip:active{transform:scale(.96)}
+.chip.active{background:#1E2A25;color:#FBF9F7;border-color:#1E2A25;box-shadow:0 14px 26px -12px rgba(30,42,37,.55)}
+.chip.active .chip-dot{background:#A8D3BE}
+.chip-dot{transition:background-color .25s,transform .35s cubic-bezier(.16,1,.3,1)}
+.filter-pill{transition:all .28s cubic-bezier(.16,1,.3,1);white-space:nowrap}
+.filter-pill.active{background:#1E2A25;color:#FBF9F7;border-color:#1E2A25;box-shadow:0 14px 30px -16px rgba(30,42,37,.6)}
+.filter-pill:not(.active):hover{background:#fff;border-color:#D9CFC0;transform:translateY(-1px)}
+.card{transition:transform .55s cubic-bezier(.16,1,.3,1),box-shadow .55s cubic-bezier(.16,1,.3,1),border-color .35s}
+.card:hover{transform:translateY(-7px);box-shadow:0 32px 66px -28px rgba(30,42,37,.26);border-color:#E8DCCB}
+.card:hover .card-img{transform:scale(1.07)}
+.card-img{transition:transform 1.1s cubic-bezier(.16,1,.3,1)}
+.card:hover .arrow-slide{transform:translate(3px,-3px)}
+.arrow-slide{transition:transform .4s cubic-bezier(.16,1,.3,1)}
+.img-fallback{background:linear-gradient(135deg,#E4F0E9 0%,#FFF4E8 55%,#E9E2FF 100%)}
+.btn-press{transition:transform .22s cubic-bezier(.16,1,.3,1),box-shadow .3s,background-color .3s,color .3s,border-color .3s}
+.btn-press:active{transform:scale(.955)}
+.magnetic{will-change:transform;transition:transform .38s cubic-bezier(.16,1,.3,1),box-shadow .35s,background-color .3s}
+.play-btn::before{content:"";position:absolute;inset:-7px;border-radius:99px;border:1.5px solid rgba(18,121,90,.35);animation:pulseRing 2.8s ease-out infinite;opacity:0;pointer-events:none}
+.play-btn.playing::before{opacity:1}
+@keyframes pulseRing{0%{transform:scale(.85);opacity:.8}80%{transform:scale(1.38);opacity:0}100%{opacity:0}}
+.progress-track{cursor:pointer}
+.progress-fill{transition:width .18s linear;position:relative}
+.progress-fill::after{content:"";position:absolute;right:-6px;top:50%;transform:translateY(-50%);width:13px;height:13px;border-radius:99px;background:#fff;box-shadow:0 4px 12px rgba(18,121,90,.45);border:2.5px solid #12795A;opacity:0;transition:opacity .25s,transform .25s}
+.progress-track:hover .progress-fill::after{opacity:1}
+.nav-link{position:relative}
+.nav-link::after{content:"";position:absolute;left:12px;right:12px;bottom:-4px;height:2px;background:#12795A;border-radius:99px;transform:scaleX(0);transform-origin:left;transition:transform .38s cubic-bezier(.16,1,.3,1)}
+.nav-link:hover::after{transform:scaleX(1)}
+.modal-panel{animation:modalIn .45s cubic-bezier(.16,1,.3,1) both}
+@keyframes modalIn{from{opacity:0;transform:translateY(20px) scale(.97)}to{opacity:1;transform:none}}
+.float-slow{animation:floaty 9s ease-in-out infinite}
+.float-slower{animation:floaty 13s ease-in-out infinite reverse}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-12px) rotate(-1deg)}}
+.parallax-img{will-change:transform;transition:transform .25s linear}
+.divider-soft{height:1px;background:linear-gradient(90deg,transparent,rgba(30,42,37,.13),transparent)}
+.stat-num{font-variant-numeric:tabular-nums}
+.mini-player{transition:transform .55s cubic-bezier(.16,1,.3,1),opacity .4s ease}
+.mini-player.hidden-down{transform:translateY(135%);opacity:0;pointer-events:none}
+.rule-line{transform:scaleX(0);transform-origin:left;transition:transform .95s cubic-bezier(.16,1,.3,1)}
+.reveal.in .rule-line{transform:scaleX(1)}
+.marquee-src{transition:color .3s,background-color .3s,transform .35s cubic-bezier(.16,1,.3,1)}
+.marquee-src:hover{color:#0D6047;background:#fff;transform:translateY(-3px)}
+.hide-scroll::-webkit-scrollbar{display:none}
+.hide-scroll{-ms-overflow-style:none;scrollbar-width:none}
+.lisa-input:focus{outline:none;border-color:#76B899;box-shadow:0 0 0 4px rgba(201,226,213,.6)}
+.new-pulse{animation:newPulse 2.2s ease-in-out infinite}
+@keyframes newPulse{0%,100%{box-shadow:0 0 0 0 rgba(194,102,74,.35)}50%{box-shadow:0 0 0 7px rgba(194,102,74,0)}}
+.toggle{width:44px;height:26px;border-radius:99px;background:#E7DCCF;position:relative;transition:background .3s;cursor:pointer;flex-shrink:0}
+.toggle.on{background:#12795A}
+.toggle::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:99px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.15);transition:left .3s cubic-bezier(.16,1,.3,1)}
+.toggle.on::after{left:21px}
+.voice-wave span{display:inline-block;width:5px;border-radius:99px;background:linear-gradient(180deg,#A8D3BE,#12795A);margin-right:4px;vertical-align:middle;animation:vw 1.2s ease-in-out infinite}
+@keyframes vw{0%,100%{height:8px}50%{height:26px}}
+.seg{transition:background-color .4s ease,color .4s ease;border-radius:.5rem;padding:.1rem .15rem}
+.seg.speaking{background:#DDF0E6;color:#0C4A38;font-weight:600}
+.stream-badge{backdrop-filter:blur(8px)}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.05s!important;scroll-behavior:auto!important}
+  .reveal{opacity:1;transform:none;filter:none}
+  .kin-word{opacity:1;transform:none}
+  .rule-line{transform:scaleX(1)}
+}
+</style>
+</head>
+<body class="min-h-screen">
+
+<!-- Progress -->
+<div class="fixed top-0 left-0 right-0 h-[3px] z-[60] bg-transparent">
+  <div id="scrollProgress" class="h-full w-0 bg-gradient-to-r from-sage-600 via-sage-400 to-amber2"></div>
+</div>
+
+<!-- HEADER -->
+<header id="siteHeader" class="sticky top-3 z-50 px-3 sm:px-5">
+  <div class="max-w-[1240px] mx-auto rounded-[24px] bg-white/85 backdrop-blur-xl border border-[#EFE6D8] shadow-soft transition-all duration-500">
+    <div class="px-4 sm:px-6">
+      <div class="flex items-center justify-between gap-4 h-[70px]">
+        <a href="#top" class="flex items-center gap-3 group">
+          <div class="w-11 h-11 rounded-[18px] bg-gradient-to-br from-sage-300 via-sage-500 to-sage-800 flex items-center justify-center shadow-[0_12px_28px_-12px_rgba(18,121,90,.6)] relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-tr from-white/30 to-transparent opacity-70"></div>
+            <svg viewBox="0 0 40 40" fill="none" class="w-6 h-6 text-white relative z-10">
+              <path d="M8 11L20 31L32 11" stroke="currentColor" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="20" cy="30" r="3.2" fill="#D8F0E3"/>
+              <path d="M28 7.5C33 10.5 34 16.5 31 21.5" stroke="#FFE4D1" stroke-width="3.2" stroke-linecap="round" stroke-dasharray="3 3"/>
+            </svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="serif-title text-[22px] font-semibold tracking-tight text-ink leading-none">VERA</span>
+              <span class="text-[8.5px] uppercase tracking-[.14em] font-extrabold px-2 py-[3px] rounded-full bg-mint text-sage-700 border border-sage-200">Home mista</span>
+            </div>
+            <p class="text-[11.5px] text-stone-500 font-medium leading-tight mt-[3px]">Le notizie, pensate per te</p>
+          </div>
+        </a>
+
+        <nav class="hidden lg:flex items-center gap-1 text-[13px] font-semibold text-stone-600">
+          <a href="#briefing-player" class="nav-link hover:text-ink transition-colors px-3 py-2">Briefing</a>
+          <a href="#top-stories" class="nav-link hover:text-ink transition-colors px-3 py-2">Home mista</a>
+          <a href="#fonti" class="nav-link hover:text-ink transition-colors px-3 py-2">Fonti</a>
+          <a href="#voce" class="nav-link hover:text-ink transition-colors px-3 py-2">Voce</a>
+          <a href="#manifesto" class="nav-link hover:text-ink transition-colors px-3 py-2">Manifesto</a>
+        </nav>
+
+        <div class="flex items-center gap-2.5">
+          <div class="hidden md:flex items-center gap-2 px-3.5 py-2 rounded-full bg-sage-50 border border-sage-100">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-sage-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-sage-600"></span>
+            </span>
+            <span class="text-[11px] font-bold text-sage-700">Live</span>
+            <span id="clockLabel" class="mono text-[11px] text-stone-500">--:--</span>
+            <span class="w-px h-3 bg-sage-200"></span>
+            <span id="lastSyncLabel" class="text-[11px] font-medium text-stone-500">agg. ora</span>
+          </div>
+          <button onclick="openModal('modalInfo')" aria-label="Regole editoriali" class="btn-press w-10 h-10 rounded-full border border-[#E7DDD0] bg-white flex items-center justify-center text-stone-600 hover:text-sage-700 hover:border-sage-300">
+            <i data-lucide="shield-check" class="w-[18px] h-[18px]"></i>
+          </button>
+          <a href="#briefing-player" class="magnetic hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-ink text-cream text-[12.5px] font-bold shadow-[0_18px_36px_-18px_rgba(27,38,33,.9)] hover:bg-sage-700">
+            <i data-lucide="headphones" class="w-4 h-4"></i> Ascolta ora
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section id="briefing" class="relative overflow-hidden scroll-mt-28">
+    <div class="hero-glow"></div>
+    <div class="blob w-[420px] h-[420px] bg-peach/50 -left-40 top-20"></div>
+    <div class="blob w-[380px] h-[380px] bg-lilac/50 -right-32 top-40"></div>
+
+    <div class="relative max-w-[1020px] mx-auto px-5 sm:px-8 pt-12 sm:pt-16 pb-8 text-center">
+      <div class="reveal inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/80 border border-[#EAE0D3] shadow-sm mb-6">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-clay opacity-70"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-clay"></span>
+        </span>
+        <span class="text-[11px] font-bold tracking-[.12em] uppercase text-stone-600">Briefing + card miste · open data &amp; rassegna internazionale</span>
+      </div>
+
+      <h1 class="serif-title text-[clamp(2.6rem,7vw,5.1rem)] leading-[0.98] tracking-[-0.032em] text-ink">
+        <span class="kin-line"><span class="kin-word" style="--d:60ms">La giornata,</span></span>
+        <span class="kin-line"><span class="kin-word" style="--d:170ms">raccontata con calma.</span></span>
+        <span class="kin-line"><span class="kin-word italic font-light text-sage-700" style="--d:300ms">Pensata per te.</span></span>
+      </h1>
+
+      <p class="reveal mt-6 text-[16.5px] sm:text-[18.5px] leading-[1.75] text-stone-600 max-w-[690px] mx-auto" style="--d:120ms">
+        Una sola home: il <strong class="font-semibold text-ink">briefing audio in alto</strong> e, sotto,
+        <strong class="font-semibold text-ink">card combinate open data + rassegna editoriale internazionale</strong>.
+        Sintesi brevi, fluide e leggibili. Fonte, licenza e link sempre in chiaro.
+      </p>
+
+      <div class="reveal mt-8 flex flex-wrap items-center justify-center gap-3" style="--d:210ms">
+        <a href="#briefing-player" class="magnetic inline-flex items-center gap-2.5 px-7 py-4 rounded-full bg-sage-600 text-white font-bold text-[15px] shadow-glow hover:bg-sage-700">
+          <i data-lucide="play" class="w-[18px] h-[18px]"></i> Ascolta il briefing
+        </a>
+        <a href="#top-stories" class="magnetic inline-flex items-center gap-2.5 px-7 py-4 rounded-full bg-white border border-[#E7DDD0] text-ink font-bold text-[15px] shadow-soft hover:border-sage-300">
+            Scorri la home mista <i data-lucide="arrow-down" class="w-[18px] h-[18px] text-sage-600"></i>
+        </a>
+      </div>
+
+      <div class="reveal mt-9 flex flex-wrap justify-center gap-3" style="--d:290ms">
+        <div class="rounded-[20px] bg-white/75 border border-[#EBE2D6] px-6 py-4 backdrop-blur">
+          <div class="serif-title text-[28px] leading-none text-ink stat-num" data-count="58" data-suffix="">0</div>
+          <div class="text-[10.5px] font-bold uppercase tracking-[.12em] text-stone-500 mt-1.5">Notizie live · oggi</div>
+        </div>
+        <div class="rounded-[20px] bg-white/75 border border-[#EBE2D6] px-6 py-4 backdrop-blur">
+          <div class="serif-title text-[28px] leading-none text-ink stat-num" data-count="48" data-suffix="">0</div>
+          <div class="text-[10.5px] font-bold uppercase tracking-[.12em] text-stone-500 mt-1.5">Testate &amp; enti</div>
+        </div>
+        <div class="rounded-[20px] bg-white/75 border border-[#EBE2D6] px-6 py-4 backdrop-blur">
+          <div class="serif-title text-[28px] leading-none text-sage-700 stat-num" data-count="100" data-suffix="%">0</div>
+          <div class="text-[10.5px] font-bold uppercase tracking-[.12em] text-stone-500 mt-1.5">Con fonte citata</div>
+        </div>
+        <div class="rounded-[20px] bg-white/75 border border-[#EBE2D6] px-6 py-4 backdrop-blur">
+          <div class="serif-title text-[28px] leading-none text-ink stat-num" data-count="7" data-suffix="">0</div>
+          <div class="text-[10.5px] font-bold uppercase tracking-[.12em] text-stone-500 mt-1.5">Sezioni miste</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BRIEFING PLAYER -->
+  <section class="relative max-w-[1240px] mx-auto px-5 sm:px-8 pb-10">
+    <div id="briefing-player" class="reveal relative rounded-[32px] overflow-hidden bg-white border border-[#EAE0D3] shadow-lisa scroll-mt-28">
+      <div class="blob w-[360px] h-[360px] bg-mint/60 -right-24 -top-24"></div>
+      <div class="blob w-[300px] h-[300px] bg-peach/60 -left-20 -bottom-24"></div>
+
+      <div class="relative p-6 sm:p-9">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+          <div class="flex flex-wrap items-center gap-2.5">
+            <span class="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-ink text-cream text-[10px] font-bold uppercase tracking-[.14em]">
+              <i data-lucide="audio-lines" class="w-3.5 h-3.5"></i> Il tuo briefing
+            </span>
+            <span class="inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-sage-50 border border-sage-200 text-sage-700 text-[10px] font-bold uppercase tracking-[.12em]">
+              <i data-lucide="sparkles" class="w-3 h-3"></i> Sintesi IA · voce dichiarata
+            </span>
+            <span id="briefingLiveBadge" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-white border border-[#E7DDD0] text-stone-600 text-[10px] font-bold uppercase tracking-[.12em]">
+              <span class="w-1.5 h-1.5 rounded-full bg-clay animate-pulse"></span> Aggiornato <span id="briefingUpdated" class="mono normal-case tracking-normal">ora</span>
+            </span>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="text-right">
+              <div class="text-[10px] text-stone-500 font-medium">Durata stimata</div>
+              <div id="durationLabel" class="mono text-[13px] font-bold text-ink">00:00</div>
+            </div>
+            <button onclick="regenerateBriefing()" class="btn-press inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-sage-600 text-white text-[12px] font-bold hover:bg-sage-700 shadow-glow">
+              <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Rigenera
+            </button>
+          </div>
+        </div>
+
+        <div class="grid lg:grid-cols-[1.05fr_.95fr] gap-7">
+          <!-- Player -->
+          <div class="rounded-[24px] bg-cream/70 border border-[#EAE0D3] p-5 sm:p-6">
+            <h3 class="serif-title text-[22px] sm:text-[24px] leading-snug tracking-[-0.01em] text-ink">
+              Premi play, ti racconto <span class="italic font-light text-sage-700">l'essenziale</span>
+            </h3>
+            <p class="text-[13px] text-stone-500 leading-relaxed mt-1.5">Una voce sola, calda e naturale. Come una persona che ti parla davanti a un caffè.</p>
+
+            <div class="mt-5">
+              <div id="progressTrack" class="progress-track h-[8px] rounded-full bg-[#DFEAE3] overflow-hidden">
+                <div id="progressFill" class="progress-fill h-full rounded-full bg-gradient-to-r from-sage-400 via-sage-500 to-amber2" style="width:0%"></div>
+              </div>
+              <div class="flex justify-between mt-2">
+                <span id="timeCurrent" class="mono text-[11px] text-stone-600">00:00</span>
+                <span id="timeTotal" class="mono text-[11px] text-stone-400">00:00</span>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-3 sm:gap-3.5 mt-4">
+              <button onclick="seekBy(-10)" class="btn-press w-11 h-11 rounded-full bg-white border border-[#E2EDE6] flex flex-col items-center justify-center text-stone-600 hover:border-sage-300">
+                <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                <span class="text-[7.5px] font-bold leading-none mt-[2px]">10s</span>
+              </button>
+              <button id="playBtn" onclick="togglePlay()" class="play-btn btn-press relative w-[64px] h-[64px] rounded-full bg-sage-600 text-white flex items-center justify-center shadow-glow hover:bg-sage-700 shrink-0">
+                <i id="playIcon" data-lucide="play" class="w-6 h-6 ml-[3px]"></i>
+              </button>
+              <button onclick="seekBy(10)" class="btn-press w-11 h-11 rounded-full bg-white border border-[#E2EDE6] flex flex-col items-center justify-center text-stone-600 hover:border-sage-300">
+                <i data-lucide="rotate-cw" class="w-4 h-4"></i>
+                <span class="text-[7.5px] font-bold leading-none mt-[2px]">10s</span>
+              </button>
+              <div class="flex-1 min-w-0">
+                <div id="waveVisualizer" class="flex items-end gap-[3px] h-[34px]">
+                  <div class="wave-bar" style="height:8px"></div><div class="wave-bar" style="height:18px"></div>
+                  <div class="wave-bar" style="height:26px"></div><div class="wave-bar" style="height:12px"></div>
+                  <div class="wave-bar" style="height:30px"></div><div class="wave-bar" style="height:16px"></div>
+                  <div class="wave-bar" style="height:9px"></div><div class="wave-bar" style="height:22px"></div>
+                  <div class="wave-bar" style="height:14px"></div><div class="wave-bar" style="height:27px"></div>
+                  <div class="wave-bar" style="height:11px"></div><div class="wave-bar" style="height:19px"></div>
+                  <div class="wave-bar" style="height:24px"></div><div class="wave-bar" style="height:13px"></div>
+                  <div class="wave-bar hidden sm:block" style="height:20px"></div><div class="wave-bar hidden sm:block" style="height:10px"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-5 pt-4 border-t border-[#E2EDE6] flex flex-wrap items-center gap-2.5">
+              <div class="flex items-center gap-2 px-3 py-2 rounded-full bg-white border border-[#E2EDE6]">
+                <i data-lucide="mic" class="w-3.5 h-3.5 text-sage-600"></i>
+                <span class="text-[10px] font-bold text-stone-600 uppercase tracking-[.12em]">Voce sintetica</span>
+              </div>
+              <div class="flex-1 min-w-[200px] flex items-center gap-2 bg-white border border-[#E2EDE6] rounded-full px-4 py-2.5">
+                <span class="w-7 h-7 rounded-full bg-gradient-to-br from-sage-400 to-sage-700 text-white flex items-center justify-center text-[12px] font-bold shrink-0">V</span>
+                <div class="min-w-0">
+                  <div class="text-[12px] font-bold text-ink leading-none truncate">Italiano · femminile, calda e umana</div>
+                  <div class="text-[10px] text-stone-500 mt-[3px]">Ritmo conversazionale · una voce sola per tutto il briefing</div>
+                </div>
+              </div>
+            </div>
+
+            <div id="briefingStatus" class="mt-4 flex items-center gap-2.5 rounded-2xl bg-white border border-[#E2EDE6] px-3.5 py-3">
+              <i data-lucide="info" class="w-4 h-4 text-sage-600 shrink-0"></i>
+              <span class="text-[12px] text-stone-600 leading-relaxed">Scegli i temi qui sotto: aggiorno il briefing e riordino le card in tempo reale.</span>
+            </div>
+          </div>
+
+          <!-- Transcript preview -->
+          <div class="rounded-[24px] bg-gradient-to-b from-white to-sage-50/60 border border-[#EAE0D3] overflow-hidden flex flex-col">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-[#F2EADD]">
+              <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-full bg-ink text-cream flex items-center justify-center">
+                  <i data-lucide="file-text" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <h3 class="text-[13.5px] font-bold text-ink leading-none">Anteprima di lettura</h3>
+                  <p class="text-[10.5px] text-stone-500 mt-1">Sintesi originale · mai copia integrale</p>
+                </div>
+              </div>
+              <button onclick="openModal('modalTranscript')" class="btn-press text-[11px] font-bold text-white px-4 py-2 rounded-full bg-sage-600 hover:bg-sage-700">Leggi tutto</button>
+            </div>
+            <div class="relative flex-1">
+              <div id="transcriptPreview" class="px-5 py-5 text-[13.8px] leading-[1.95] text-stone-600 max-h-[300px] overflow-hidden"></div>
+              <div class="pointer-events-none absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-white via-white/85 to-transparent"></div>
+            </div>
+            <div class="px-5 pb-5">
+              <div class="flex items-center gap-2 text-[10.5px] font-semibold text-stone-600 bg-mint/60 border border-sage-100 rounded-2xl px-3.5 py-3">
+                <i data-lucide="badge-check" class="w-4 h-4 text-sage-600 shrink-0"></i> Ogni sintesi rimanda alla fonte originale. Tocca una card per approfondire.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sector chips -->
+        <div class="mt-7 pt-6 border-t border-[#EDE4D8]">
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <h4 class="text-[11px] font-bold uppercase tracking-[.17em] text-stone-600 flex items-center gap-2">
+              <span class="w-6 h-[2px] bg-sage-600 rounded-full"></span> Cosa ti interessa oggi?
+            </h4>
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] font-semibold text-stone-500">Temi attivi</span>
+              <span id="sectorCount" class="mono text-[11px] font-bold px-2.5 py-1 rounded-full bg-ink text-cream">0</span>
+            </div>
+          </div>
+          <div id="sectorChipsContainer" class="flex flex-wrap gap-2.5"></div>
+
+          <div class="flex flex-wrap items-center gap-2.5 mt-5">
+            <button onclick="selectAllSectors()" class="btn-press inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white border border-[#E7DDD0] text-[12px] font-bold text-ink hover:border-sage-300">
+              <i data-lucide="check-check" class="w-3.5 h-3.5 text-sage-600"></i> Tutti
+            </button>
+            <button onclick="clearSectors()" class="btn-press inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white border border-[#E7DDD0] text-[12px] font-bold text-stone-600 hover:border-stone-300">
+              <i data-lucide="eraser" class="w-3.5 h-3.5"></i> Azzera
+            </button>
+            <button onclick="refreshFeeds()" class="btn-press inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white border border-[#E7DDD0] text-[12px] font-bold text-ink hover:border-sage-300">
+              <i data-lucide="radio-tower" class="w-3.5 h-3.5 text-clay"></i> Aggiorna ora
+            </button>
+            <span class="text-[11px] text-stone-500 ml-1">Il briefing e le card si riordinano da soli in base ai temi.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TICKER -->
+  <div class="ticker ticker-fade relative border-y border-[#EDE4D8] bg-white/70 py-3.5 overflow-hidden backdrop-blur">
+    <div id="tickerTrack" class="ticker-track items-center gap-10 text-[12px]"></div>
+  </div>
+
+  <!-- HOME MISTA -->
+  <section id="top-stories" class="relative scroll-mt-28">
+    <div class="max-w-[1240px] mx-auto px-5 sm:px-8 py-14 sm:py-16">
+
+      <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
+        <div class="reveal max-w-[700px]">
+          <div class="flex flex-wrap items-center gap-2.5 mb-3">
+            <span class="w-6 h-[2px] bg-clay rounded-full"></span>
+            <span class="text-[10.5px] font-bold uppercase tracking-[.19em] text-clay">Home mista · default</span>
+            <span class="px-2.5 py-1 rounded-full bg-mint border border-sage-200 text-[10px] font-bold text-sage-700">Briefing + card combinate</span>
+          </div>
+          <h2 class="serif-title text-[clamp(2.1rem,5vw,3.6rem)] leading-[1.06] tracking-[-0.028em] text-ink">
+            Un solo flusso morbido, <span class="italic font-light text-sage-700">tutto in ordine per te</span>
+          </h2>
+          <p class="mt-4 text-[15.5px] leading-[1.8] text-stone-600">
+            In alto il briefing audio, sotto le card miste. Ogni sezione mescola
+            <strong class="text-ink">open data &amp; istituzioni</strong> e <strong class="text-ink">rassegna internazionale</strong>,
+            con intestazioni progressive, testata, licenza e link diretto sempre visibili.
+          </p>
+        </div>
+
+        <div class="reveal flex flex-col gap-3" style="--d:130ms">
+          <div class="flex flex-wrap items-center gap-3">
+            <button onclick="refreshFeeds()" class="magnetic inline-flex items-center gap-2 px-5 py-3 rounded-full bg-white border border-[#E7DDD0] text-[12.5px] font-bold text-ink hover:border-sage-300 shadow-soft">
+              <i data-lucide="refresh-cw" class="w-4 h-4 text-sage-600"></i> Sincronizza feed
+            </button>
+            <button onclick="filterFeed('type:open')" class="magnetic inline-flex items-center gap-2 px-5 py-3 rounded-full bg-sage-600 text-white text-[12.5px] font-bold shadow-glow hover:bg-sage-700">
+              <i data-lucide="database" class="w-4 h-4"></i> Solo fonti aperte
+            </button>
+          </div>
+          <div class="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-white border border-[#E7DDD0] shadow-sm">
+            <div id="autoToggle" onclick="toggleAutoRefresh()" class="toggle on"></div>
+            <div>
+              <div class="text-[12px] font-bold text-ink leading-none">Aggiornamento automatico</div>
+              <div id="autoLabel" class="text-[11px] text-stone-500 mt-1">Attivo · controllo ogni 60 secondi</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dual stream banner -->
+      <div class="reveal mt-8 grid sm:grid-cols-2 gap-3">
+        <div class="flex items-start gap-3 rounded-[20px] bg-white border border-[#EAE0D3] p-4 shadow-sm">
+          <div class="w-9 h-9 rounded-2xl bg-mint flex items-center justify-center shrink-0">
+            <i data-lucide="database" class="w-4 h-4 text-sage-700"></i>
+          </div>
+          <div>
+            <div class="text-[12.5px] font-bold text-ink">Flusso open data &amp; istituzioni</div>
+            <div class="text-[11.5px] text-stone-500 mt-0.5">Dati pubblici, enti e agenzie: numeri datati, licenza sempre in chiaro.</div>
+          </div>
+        </div>
+        <div class="flex items-start gap-3 rounded-[20px] bg-white border border-[#EAE0D3] p-4 shadow-sm">
+          <div class="w-9 h-9 rounded-2xl bg-peach flex items-center justify-center shrink-0">
+            <i data-lucide="newspaper" class="w-4 h-4 text-clay"></i>
+          </div>
+          <div>
+            <div class="text-[12.5px] font-bold text-ink">Flusso rassegna internazionale</div>
+            <div class="text-[11.5px] text-stone-500 mt-0.5">Grandi testate: sintesi originali, citazione breve e link alla fonte.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="reveal mt-6 flex flex-col md:flex-row gap-3 md:items-center">
+        <div class="relative flex-1 min-w-[220px]">
+          <i data-lucide="search" class="w-4 h-4 text-stone-400 absolute left-4 top-1/2 -translate-y-1/2"></i>
+          <input id="searchInput" oninput="onSearch(this.value)" placeholder="Cerca tra notizie, fonti, temi… (es. clima, BCE, AI)" class="lisa-input w-full pl-11 pr-4 py-3.5 rounded-full bg-white border border-[#E4D9C9] text-[13.5px] text-ink placeholder:text-stone-400 shadow-sm">
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="toggleBookmarksOnly()" id="savedBtn" class="btn-press inline-flex items-center gap-2 px-4 py-3 rounded-full border border-[#E4D9C9] bg-white/80 text-[12px] font-bold text-stone-600">
+            <i data-lucide="bookmark" class="w-4 h-4"></i> Salvati <span id="savedCount" class="mono text-[11px] px-2 py-0.5 rounded-full bg-sand">0</span>
+          </button>
+          <select id="sortSelect" onchange="onSortChange(this.value)" class="lisa-input bg-white border border-[#E4D9C9] rounded-full px-4 py-3 text-[12px] font-bold text-stone-700">
+            <option value="recent">Più recenti</option>
+            <option value="top">Top stories prima</option>
+            <option value="open">Open data prima</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="reveal mt-4 flex items-center gap-2.5 overflow-x-auto pb-2 hide-scroll" id="filterBar">
+        <button onclick="filterFeed('all')" data-filter="all" class="filter-pill active px-4 py-2.5 rounded-full border border-[#E4D9C9] bg-white text-[11.5px] font-bold text-stone-600">Tutto · misto</button>
+        <button onclick="filterFeed('type:editorial')" data-filter="type:editorial" class="filter-pill px-4 py-2.5 rounded-full border border-[#E4D9C9] bg-white text-[11.5px] font-bold text-stone-600">Rassegna internazionale</button>
+        <button onclick="filterFeed('type:open')" data-filter="type:open" class="filter-pill px-4 py-2.5 rounded-full border border-[#E4D9C9] bg-white text-[11.5px] font-bold text-stone-600">Open data &amp; istituzioni</button>
+        <button onclick="filterFeed('cat:top')" data-filter="cat:top" class="filter-pill px-4 py-2.5 rounded-full border border-[#E4D9C9] bg-white text-[11.5px] font-bold text-stone-600">Top stories</button>
+        <button onclick="filterFeed('cat:esteri')" data-filter="cat:esteri" class="filter-pill px-4 py-2.5 rounded-full border border-[#E4D9C9] bg-white text-[11.5px] font-bold text-stone-600">Esteri</button>
+        <button onclick="filterFeed('cat:italia')" data-filter="cat:italia" class="filter-pill px-4 py-2.5 rounded-full border border-[#E4D9C9] bg-white text-[11.5px] font-bold text-stone-600">Italia</button>
+        <button onclick="filterFeed('cat:economia')" data-filter="cat:economia" class="filter-pill px-4 py-2.5 rounded-full border border-[#E4D9C9] bg-white text-[11.5px] font-bold text-stone-600">Economia</button>
+        <button onclick="filterFeed('cat:tech')" data-filter="cat:tech" class="filter-pill px-4 py-2.5 rounded-full border border-[#E4D9C9] bg-white text-[11.5px] font-bold text-stone-600">Tech &amp; Scienza</button>
+        <button onclick="filterFeed('cat:cultura')" data-filter="cat:cultura" class="filter-pill px-4 py-2.5 rounded-full border border-[#E4D9C9] bg-white text-[11.5px] font-bold text-stone-600">Cultura</button>
+        <button onclick="filterFeed('cat:sport')" data-filter="cat:sport" class="filter-pill px-4 py-2.5 rounded-full border border-[#E4D9C9] bg-white text-[11.5px] font-bold text-stone-600">Sport</button>
+      </div>
+
+      <div id="feedSections" class="mt-8 space-y-14"></div>
+
+      <div class="reveal mt-12 text-center">
+        <button onclick="showAllFeeds()" class="magnetic inline-flex items-center gap-2.5 px-7 py-4 rounded-full bg-white border border-[#E7DDD0] shadow-soft text-[13px] font-bold text-ink hover:border-sage-300">
+          Riordina tutto il flusso <i data-lucide="shuffle" class="w-4 h-4 text-sage-600"></i>
+        </button>
+        <p class="mt-3 text-[11.5px] text-stone-500">Le notizie si aggiornano da sole. Ultimo controllo: <span id="lastCheckInline" class="mono font-bold">ora</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FONTI -->
+  <section id="fonti" class="relative max-w-[1240px] mx-auto px-5 sm:px-8 py-16 sm:py-20 scroll-mt-24">
+    <div class="reveal text-center max-w-[760px] mx-auto">
+      <div class="flex items-center justify-center gap-2.5 mb-4">
+        <span class="w-6 h-[2px] bg-sage-600 rounded-full"></span>
+        <span class="text-[10.5px] font-bold uppercase tracking-[.19em] text-sage-700">Trasparenza amichevole</span>
+        <span class="w-6 h-[2px] bg-sage-600 rounded-full"></span>
+      </div>
+      <h2 class="serif-title text-[clamp(2rem,4.6vw,3.15rem)] leading-[1.1] tracking-[-0.025em] text-ink">
+        Chi parla, dove lo trovi, <span class="italic font-light text-sage-700">con quale licenza</span>
+      </h2>
+      <p class="mt-5 text-[15.5px] leading-[1.82] text-stone-600">
+        Niente copia-incolla: solo sintesi originali, brevi e leggibili. Ogni card mostra testata, link diretto e licenza.
+        L'audio è sempre dichiarato come <strong class="text-ink">voce sintetica</strong>.
+      </p>
+    </div>
+
+    <div class="reveal mt-10 flex flex-wrap justify-center gap-2.5" id="sourceCloud"></div>
+
+    <div class="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="reveal card rounded-[24px] bg-white border border-[#EBE2D6] p-6 shadow-soft">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl bg-peach flex items-center justify-center"><i data-lucide="globe-2" class="w-5 h-5 text-clay"></i></div>
+          <div>
+            <div class="text-[13px] font-bold text-ink">Testate internazionali</div>
+            <div class="text-[10.5px] text-stone-500 mt-0.5">BBC · Le Monde · El País · Reuters · AP</div>
+          </div>
+        </div>
+        <p class="mt-4 text-[12px] leading-relaxed text-stone-500">Sintesi originali con citazione breve e link diretto. Mai testi riprodotti per intero.</p>
+        <div class="mt-4 flex items-center gap-2 text-[10px] font-bold text-clay"><i data-lucide="link" class="w-3.5 h-3.5"></i> Link alla fonte in ogni card</div>
+      </div>
+
+      <div class="reveal card rounded-[24px] bg-white border border-[#EBE2D6] p-6 shadow-soft" style="--d:90ms">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl bg-mint flex items-center justify-center"><i data-lucide="landmark" class="w-5 h-5 text-sage-700"></i></div>
+          <div>
+            <div class="text-[13px] font-bold text-ink">Istituzioni &amp; enti</div>
+            <div class="text-[10.5px] text-stone-500 mt-0.5">UE · EEA · NASA · ISTAT · Eurostat</div>
+          </div>
+        </div>
+        <p class="mt-4 text-[12px] leading-relaxed text-stone-500">Dati pubblici rielaborati con cura, con attribuzione completa e licenza visibile.</p>
+        <div class="mt-4 flex items-center gap-2 text-[10px] font-bold text-sage-700"><i data-lucide="database" class="w-3.5 h-3.5"></i> Dataset verificati e datati</div>
+      </div>
+
+      <div class="reveal card rounded-[24px] bg-white border border-[#EBE2D6] p-6 shadow-soft" style="--d:180ms">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl bg-[#FFF2CC] flex items-center justify-center"><i data-lucide="scroll-text" class="w-5 h-5 text-amber2"></i></div>
+          <div>
+            <div class="text-[13px] font-bold text-ink">Licenze aperte</div>
+            <div class="text-[10.5px] text-stone-500 mt-0.5">CC BY 4.0 · CC0 · Public Domain</div>
+          </div>
+        </div>
+        <p class="mt-4 text-[12px] leading-relaxed text-stone-500">Quando il riuso è libero lo vedi subito: la sigla della licenza è sulla card.</p>
+        <div class="mt-4 flex items-center gap-2 text-[10px] font-bold text-amber2"><i data-lucide="scale" class="w-3.5 h-3.5"></i> Rispetto sempre dei diritti</div>
+      </div>
+
+      <div class="reveal card rounded-[24px] bg-ink text-cream p-6 border border-ink shadow-lift" style="--d:270ms">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl bg-white/10 flex items-center justify-center"><i data-lucide="audio-lines" class="w-5 h-5 text-sage-300"></i></div>
+          <div>
+            <div class="text-[13px] font-bold text-white">Voce sintetica</div>
+            <div class="text-[10.5px] text-white/60 mt-0.5">Dichiarata · mai clonata</div>
+          </div>
+        </div>
+        <p class="mt-4 text-[12px] leading-relaxed text-white/70">Una voce unica, italiana, calda e naturale, sempre etichettata come generata per il briefing.</p>
+        <div class="mt-4 flex items-center gap-2 text-[10px] font-bold text-sage-300"><i data-lucide="mic" class="w-3.5 h-3.5"></i> Trasparenza audio totale</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VOCE -->
+  <section id="voce" class="relative max-w-[1240px] mx-auto px-5 sm:px-8 pb-8 scroll-mt-24">
+    <div class="reveal relative overflow-hidden rounded-[32px] bg-white border border-[#EAE0D3] shadow-lisa">
+      <div class="blob w-[340px] h-[340px] bg-mint/70 -left-20 -top-20"></div>
+      <div class="blob w-[300px] h-[300px] bg-peach/60 right-0 bottom-0"></div>
+
+      <div class="relative grid lg:grid-cols-[1fr_.95fr] gap-8 p-7 sm:p-11 items-center">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-ink text-cream text-[10px] font-bold uppercase tracking-[.16em] mb-5">
+            <i data-lucide="mic" class="w-3.5 h-3.5"></i> Una sola voce · VERA
+          </div>
+          <h2 class="serif-title text-[clamp(1.9rem,4.2vw,2.9rem)] leading-[1.1] tracking-[-0.025em] text-ink">
+            Come un'amica <span class="italic font-light text-sage-700">davanti a un caffè</span>
+          </h2>
+          <p class="mt-4 text-[14.5px] leading-[1.85] text-stone-600">
+            Niente speaker, niente telegiornale, niente pubblicità. Una sola voce femminile italiana — giovane adulta, timbro medio,
+            morbido e leggermente caldo. Sorridente e luminosa, ma senza entusiasmi finti: ti parla direttamente, come a una persona che conosce bene.
+          </p>
+          <ul class="mt-5 space-y-3 text-[13px] leading-relaxed text-stone-600">
+            <li class="flex gap-3">
+              <span class="w-8 h-8 rounded-full bg-mint flex items-center justify-center shrink-0"><i data-lucide="heart" class="w-4 h-4 text-sage-700"></i></span>
+              <span><strong class="text-ink">Vicina e naturale.</strong> Ritmo conversazionale, pause brevi, piccoli respiri. Se una notizia è importante rallenta, se è curiosa sorride appena.</span>
+            </li>
+            <li class="flex gap-3">
+              <span class="w-8 h-8 rounded-full bg-peach flex items-center justify-center shrink-0"><i data-lucide="ear" class="w-4 h-4 text-clay"></i></span>
+              <span><strong class="text-ink">Mai meccanica.</strong> Non legge in modo uniforme: interpreta, dà peso alle parole, resta umana dal primo all'ultimo minuto.</span>
+            </li>
+            <li class="flex gap-3">
+              <span class="w-8 h-8 rounded-full bg-lilac flex items-center justify-center shrink-0"><i data-lucide="user-check" class="w-4 h-4 text-[#6B5BCE]"></i></span>
+              <span><strong class="text-ink">Discreta.</strong> Non si presenta in continuazione e non ripete il proprio nome: racconta le notizie, e basta.</span>
+            </li>
+          </ul>
+          <div class="mt-6 flex flex-wrap gap-2.5">
+            <span class="px-3.5 py-2 rounded-full bg-cream border border-[#E7DDD0] text-[11px] font-bold text-stone-600">Italiano perfetto · contemporaneo</span>
+            <span class="px-3.5 py-2 rounded-full bg-cream border border-[#E7DDD0] text-[11px] font-bold text-stone-600">Timbro medio · mai acuto</span>
+            <span class="px-3.5 py-2 rounded-full bg-cream border border-[#E7DDD0] text-[11px] font-bold text-stone-600">Zero tono istituzionale</span>
+          </div>
+        </div>
+
+        <div class="rounded-[26px] bg-[#16291F] text-white p-7 sm:p-8 relative overflow-hidden grain">
+          <div class="blob w-[260px] h-[260px] bg-sage-500/25 -right-16 -top-16"></div>
+          <div class="relative">
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 rounded-[22px] bg-gradient-to-br from-sage-300 to-sage-600 flex items-center justify-center text-[24px] font-bold serif-title">V</div>
+              <div>
+                <div class="text-[15px] font-bold">VERA · Voce unica</div>
+                <div class="text-[11px] text-white/60 mt-1">Femminile · calda · molto umana</div>
+                <div class="voice-wave mt-2" id="sampleWave" style="opacity:.35">
+                  <span style="animation-delay:0s"></span><span style="animation-delay:.15s"></span>
+                  <span style="animation-delay:.3s"></span><span style="animation-delay:.45s"></span>
+                  <span style="animation-delay:.6s"></span><span style="animation-delay:.75s"></span>
+                </div>
+              </div>
+            </div>
+            <p class="mt-5 text-[13.5px] leading-[1.85] text-white/75 italic serif-title">
+              “Prenditi un momento... ti racconto con calma cosa sta succedendo, scegliendo ciò che conta davvero per te.”
+            </p>
+            <button onclick="playVoiceSample()" class="btn-press mt-6 w-full inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-full bg-cream text-ink font-bold text-[14px] hover:bg-white">
+              <i data-lucide="play" class="w-4 h-4"></i> Ascolta la voce di VERA
+            </button>
+            <p class="mt-4 text-[11px] leading-relaxed text-white/55 flex items-start gap-2">
+              <i data-lucide="badge-check" class="w-3.5 h-3.5 mt-[1px] shrink-0 text-sage-300"></i>
+              Voce sintetica dichiarata. Non replica alcuna persona reale e non cambia mai: è sempre lei.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MANIFESTO -->
+  <section id="manifesto" class="relative px-3 sm:px-5 pb-6 scroll-mt-24">
+    <div class="max-w-[1240px] mx-auto relative overflow-hidden rounded-[32px] bg-[#16291F]">
+      <div class="absolute inset-0 opacity-[.18]">
+        <img class="w-full h-full object-cover parallax-img" src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1600&q=70" alt="" onerror="this.style.display='none'">
+      </div>
+      <div class="absolute inset-0 bg-gradient-to-b from-[#16291F]/90 via-[#16291F]/88 to-[#16291F]"></div>
+      <div class="blob w-[400px] h-[400px] bg-sage-500/20 right-0 top-0"></div>
+
+      <div class="relative px-6 sm:px-12 py-14 sm:py-20 grid lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <div class="reveal inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-white/10 border border-white/15 mb-6">
+            <i data-lucide="heart-handshake" class="w-3.5 h-3.5 text-sage-300"></i>
+            <span class="text-[10.5px] font-bold uppercase tracking-[.17em] text-white/85">Manifesto VERA · stile gentile</span>
+          </div>
+          <h2 class="reveal serif-title text-[clamp(2.1rem,4.8vw,3.6rem)] leading-[1.06] tracking-[-0.03em] text-white">
+            Un'informazione più <span class="italic font-light text-sage-200">gentile</span>, senza perdere il rigore.
+          </h2>
+          <p class="reveal mt-5 text-[15.5px] leading-[1.88] text-white/75 max-w-[540px]" style="--d:110ms">
+            Frasi che respirano, parole semplici, ritmo morbido. Ti accompagniamo tra i fatti con calma: i dati restano al centro,
+            l'esperienza si fa più umana e contemporanea.
+          </p>
+          <div class="reveal flex flex-wrap gap-3 mt-8" style="--d:190ms">
+            <a href="#briefing-player" class="magnetic inline-flex items-center gap-2.5 px-7 py-4 rounded-full bg-cream text-ink font-bold text-[14.5px] hover:bg-white">
+              Prova il briefing <i data-lucide="arrow-up-right" class="w-[18px] h-[18px] text-sage-700"></i>
+            </a>
+            <button onclick="openModal('modalInfo')" class="magnetic inline-flex items-center gap-2.5 px-7 py-4 rounded-full bg-white/10 border border-white/20 text-white font-bold text-[14.5px] hover:bg-white/20">Le nostre regole</button>
+          </div>
+          <div class="reveal mt-8 flex items-center gap-3 text-white/60 text-[12px]" style="--d:250ms">
+            <div class="flex -space-x-2">
+              <div class="w-8 h-8 rounded-full bg-mint border-2 border-[#16291F] flex items-center justify-center text-[12px]">🌿</div>
+              <div class="w-8 h-8 rounded-full bg-peach border-2 border-[#16291F] flex items-center justify-center text-[12px]">📰</div>
+              <div class="w-8 h-8 rounded-full bg-lilac border-2 border-[#16291F] flex items-center justify-center text-[12px]">🎧</div>
+            </div>
+            Amata da lettori curiosi e ascoltatori mattinieri
+          </div>
+        </div>
+
+        <div class="space-y-3.5">
+          <div class="reveal rounded-[22px] bg-white/[.08] border border-white/10 p-6 backdrop-blur">
+            <div class="flex items-start gap-4">
+              <div class="mono text-[11px] font-bold text-sage-300 pt-1">01</div>
+              <div>
+                <h3 class="text-[15px] font-bold text-white">Sintesi, mai copia</h3>
+                <p class="text-[13px] leading-[1.78] text-white/68 mt-1.5">Ogni voce è una rielaborazione originale e scorrevole. Citazioni brevi, contesto chiaro, zero copia-incolla.</p>
+              </div>
+            </div>
+          </div>
+          <div class="reveal rounded-[22px] bg-white/[.08] border border-white/10 p-6 backdrop-blur" style="--d:100ms">
+            <div class="flex items-start gap-4">
+              <div class="mono text-[11px] font-bold text-sage-300 pt-1">02</div>
+              <div>
+                <h3 class="text-[15px] font-bold text-white">Attribuzione sempre visibile</h3>
+                <p class="text-[13px] leading-[1.78] text-white/68 mt-1.5">Testata, link diretto e licenza sono parte della card. Un tap e sei sulla fonte originale.</p>
+              </div>
+            </div>
+          </div>
+          <div class="reveal rounded-[22px] bg-white/[.08] border border-white/10 p-6 backdrop-blur" style="--d:200ms">
+            <div class="flex items-start gap-4">
+              <div class="mono text-[11px] font-bold text-sage-300 pt-1">03</div>
+              <div>
+                <h3 class="text-[15px] font-bold text-white">IA dichiarata, voce calda</h3>
+                <p class="text-[13px] leading-[1.78] text-white/68 mt-1.5">Audio e testi assistiti sono etichettati. Una sola voce, mai clonata da persone reali.</p>
+              </div>
+            </div>
+          </div>
+          <div class="reveal rounded-[22px] bg-white/[.08] border border-white/10 p-6 backdrop-blur" style="--d:300ms">
+            <div class="flex items-start gap-4">
+              <div class="mono text-[11px] font-bold text-sage-300 pt-1">04</div>
+              <div>
+                <h3 class="text-[15px] font-bold text-white">Sempre aggiornata</h3>
+                <p class="text-[13px] leading-[1.78] text-white/68 mt-1.5">Il flusso si sincronizza in automatico. Vedi subito cosa è nuovo e quando è stato verificato.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section class="relative max-w-[1240px] mx-auto px-5 sm:px-8 py-14 sm:py-16">
+    <div class="reveal relative overflow-hidden rounded-[32px] bg-gradient-to-br from-[#FFF8F0] via-[#F7F0E6] to-[#E3F0E8] border border-[#E8DED0] shadow-soft">
+      <div class="absolute -top-24 -right-16 w-80 h-80 rounded-full bg-sage-200/50 blur-3xl"></div>
+      <div class="absolute -bottom-24 -left-10 w-72 h-72 rounded-full bg-peach/70 blur-3xl"></div>
+
+      <div class="relative grid lg:grid-cols-[1.1fr_.9fr] gap-10 items-center p-8 sm:p-12">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-[#E7DDD0] text-[10.5px] font-bold uppercase tracking-[.14em] text-stone-600 mb-4">
+            <i data-lucide="mail-heart" class="w-3.5 h-3.5 text-clay"></i> La buongiorno-email
+          </div>
+          <h2 class="serif-title text-[clamp(1.9rem,4.2vw,3rem)] leading-[1.1] tracking-[-0.025em] text-ink">
+            Ogni mattina, <span class="italic font-light text-sage-700">la tua home in formato tascabile</span>
+          </h2>
+          <p class="mt-4 text-[15.5px] leading-[1.82] text-stone-600 max-w-[540px]">
+            Cinque sintesi verificate, il briefing audio pronto e i link alle fonti. Leggero, gentile, senza rumore. Disdici quando vuoi.
+          </p>
+          <form class="mt-7 flex flex-col sm:flex-row gap-3 max-w-[540px]" onsubmit="event.preventDefault(); subscribeSuccess(this);">
+            <div class="flex-1 relative">
+              <i data-lucide="mail" class="w-4 h-4 text-stone-400 absolute left-4 top-1/2 -translate-y-1/2"></i>
+              <input type="email" required placeholder="la-tua-email@esempio.it" class="lisa-input w-full pl-11 pr-4 py-4 rounded-full bg-white border border-[#E5DACA] text-[14px] text-ink placeholder:text-stone-400 transition-all">
+            </div>
+            <button type="submit" class="magnetic inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full bg-ink text-cream font-bold text-[14px] hover:bg-sage-700 whitespace-nowrap">
+              Iscriviti <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+          </form>
+          <p class="mt-3 text-[11px] text-stone-500">Nessuno spam. Solo contenuti editoriali con attribuzione completa.</p>
+        </div>
+
+        <div class="relative">
+          <div class="rounded-[24px] overflow-hidden shadow-lift img-fallback aspect-[4/3]">
+            <img class="card-img w-full h-full object-cover" src="https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=1000&q=75" alt="Lettura del quotidiano" onerror="this.style.display='none'">
+          </div>
+          <div class="float-slower absolute -bottom-6 -left-2 sm:left-6 bg-white rounded-2xl shadow-lift px-5 py-4 border border-[#F0E8DC]">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-mint flex items-center justify-center"><i data-lucide="headphones" class="w-4 h-4 text-sage-700"></i></div>
+              <div>
+                <div class="text-[11.5px] font-bold text-ink">Briefing audio pronto</div>
+                <div class="text-[10px] text-stone-500">Voce unica · dichiarata · live</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- FOOTER -->
+<footer class="border-t border-[#EDE4D8] bg-[#F7F3ED] rounded-t-[32px]">
+  <div class="max-w-[1240px] mx-auto px-5 sm:px-8 py-14">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
+      <div>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-[16px] bg-gradient-to-br from-sage-300 via-sage-500 to-sage-800 flex items-center justify-center">
+            <svg viewBox="0 0 40 40" fill="none" class="w-5 h-5 text-white">
+              <path d="M8 11L20 31L32 11" stroke="currentColor" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="20" cy="30" r="3.2" fill="#D8F0E3"/>
+            </svg>
+          </div>
+          <div>
+            <div class="serif-title text-[19px] font-semibold text-ink leading-none">VERA</div>
+            <div class="text-[10px] text-stone-500 mt-1">Le notizie, pensate per te</div>
+          </div>
+        </div>
+        <p class="mt-5 text-[12.5px] leading-[1.85] text-stone-500 max-w-[290px]">
+          Una voce amica che trasforma fonti aperte e testate internazionali in un briefing chiaro, verificato e ascoltabile.
+        </p>
+        <div class="mt-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-mint border border-sage-200 text-[10px] font-bold text-sage-700">
+          <i data-lucide="sparkles" class="w-3 h-3"></i> Sintesi IA · sempre dichiarata
+        </div>
+      </div>
+
+      <div>
+        <h4 class="text-[10.5px] font-bold uppercase tracking-[.16em] text-stone-600">Prodotto</h4>
+        <ul class="mt-4 space-y-3">
+          <li><a href="#briefing-player" class="text-[12.5px] text-stone-500 hover:text-sage-700 transition-colors">Briefing audio</a></li>
+          <li><a href="#top-stories" class="text-[12.5px] text-stone-500 hover:text-sage-700 transition-colors">Home mista</a></li>
+          <li><a href="#fonti" class="text-[12.5px] text-stone-500 hover:text-sage-700 transition-colors">Fonti &amp; licenze</a></li>
+          <li><a href="#manifesto" class="text-[12.5px] text-stone-500 hover:text-sage-700 transition-colors">Manifesto</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="text-[10.5px] font-bold uppercase tracking-[.16em] text-stone-600">Trasparenza</h4>
+        <ul class="mt-4 space-y-3">
+          <li><button onclick="openModal('modalInfo')" class="text-[12.5px] text-stone-500 hover:text-sage-700 transition-colors">Regole editoriali</button></li>
+          <li><button onclick="openModal('modalTranscript')" class="text-[12.5px] text-stone-500 hover:text-sage-700 transition-colors">Trascrizione completa</button></li>
+          <li><a href="#fonti" class="text-[12.5px] text-stone-500 hover:text-sage-700 transition-colors">Politica di attribuzione</a></li>
+          <li><a href="#voce" class="text-[12.5px] text-stone-500 hover:text-sage-700 transition-colors">Dichiarazione IA</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="text-[10.5px] font-bold uppercase tracking-[.16em] text-stone-600">Resta aggiornato</h4>
+        <div class="mt-4 flex items-center gap-2">
+          <a href="#" aria-label="X" class="btn-press w-10 h-10 rounded-full bg-white border border-[#E5DACA] flex items-center justify-center text-stone-600 hover:text-sage-700 hover:border-sage-300"><i data-lucide="twitter" class="w-4 h-4"></i></a>
+          <a href="#" aria-label="LinkedIn" class="btn-press w-10 h-10 rounded-full bg-white border border-[#E5DACA] flex items-center justify-center text-stone-600 hover:text-sage-700 hover:border-sage-300"><i data-lucide="linkedin" class="w-4 h-4"></i></a>
+          <a href="#" aria-label="RSS" class="btn-press w-10 h-10 rounded-full bg-white border border-[#E5DACA] flex items-center justify-center text-stone-600 hover:text-sage-700 hover:border-sage-300"><i data-lucide="rss" class="w-4 h-4"></i></a>
+        </div>
+        <div class="mt-5 inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-white border border-[#E5DACA]">
+          <span class="relative flex h-1.5 w-1.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-sage-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-sage-600"></span>
+          </span>
+          <span class="text-[10.5px] font-semibold text-stone-600">Feed sincronizzati · <span id="footerSync">ora</span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider-soft my-10"></div>
+
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <p class="text-[11px] text-stone-500 leading-relaxed max-w-[760px]">
+        © 2026 VERA — Le notizie, pensate per te. Sintesi originali con brevi citazioni di testate, enti e dataset aperti.
+        I contenuti appartengono ai rispettivi autori. Audio con voce sintetica dichiarata. <span class="opacity-80">Contenuti editoriali assistiti da intelligenza artificiale.</span>
+      </p>
+      <div class="flex items-center gap-5">
+        <a href="#" class="text-[11px] text-stone-500 hover:text-sage-700 transition-colors">Privacy</a>
+        <a href="#" class="text-[11px] text-stone-500 hover:text-sage-700 transition-colors">Termini</a>
+        <a href="#" class="text-[11px] text-stone-500 hover:text-sage-700 transition-colors">Cookie</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- MINI PLAYER -->
+<div id="miniPlayer" class="mini-player hidden-down fixed bottom-4 left-1/2 -translate-x-1/2 z-[55] w-[calc(100%-2rem)] max-w-[580px]">
+  <div class="flex items-center gap-3 px-4 py-3 rounded-[22px] bg-[#16291F]/95 backdrop-blur-xl border border-white/10 shadow-[0_30px_60px_-22px_rgba(12,32,25,.85)]">
+    <button onclick="togglePlay()" class="btn-press w-10 h-10 rounded-full bg-sage-400 text-[#0E2A20] flex items-center justify-center shrink-0">
+      <i id="miniPlayIcon" data-lucide="play" class="w-4 h-4 ml-[2px]"></i>
+    </button>
+    <button onclick="seekBy(-10)" class="btn-press w-9 h-9 rounded-full bg-white/10 hidden sm:flex items-center justify-center text-white/85 shrink-0"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i></button>
+    <button onclick="seekBy(10)" class="btn-press w-9 h-9 rounded-full bg-white/10 hidden sm:flex items-center justify-center text-white/85 shrink-0"><i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i></button>
+    <div class="flex-1 min-w-0">
+      <div class="flex items-center justify-between mb-1.5">
+        <span class="text-[11px] font-semibold text-white/90 truncate">VERA · il tuo briefing</span>
+        <span id="miniTime" class="mono text-[10px] text-white/55">00:00</span>
+      </div>
+      <div id="miniProgressTrack" class="progress-track h-[4px] rounded-full bg-white/15 overflow-hidden">
+        <div id="miniProgressFill" class="progress-fill h-full rounded-full bg-gradient-to-r from-sage-300 to-sage-400" style="width:0%"></div>
+      </div>
+    </div>
+    <button onclick="closeMiniPlayer()" class="btn-press w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white/70 shrink-0"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+  </div>
+</div>
+
+<!-- MODAL: REGOLE -->
+<div id="modalInfo" class="hidden fixed inset-0 bg-[#0E2A20]/55 backdrop-blur-[3px] z-[70] flex items-center justify-center p-4 overflow-y-auto" onclick="if(event.target===this)closeModal('modalInfo')">
+  <div class="modal-panel bg-cream w-full max-w-[580px] rounded-[28px] p-7 sm:p-9 shadow-[0_50px_100px_-30px_rgba(12,32,25,.7)] my-8">
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2 mb-2">
+          <span class="w-6 h-[2px] bg-sage-600 rounded-full"></span>
+          <span class="text-[10px] font-bold uppercase tracking-[.17em] text-sage-700">Regole gentili</span>
+        </div>
+        <h3 class="serif-title text-[26px] leading-tight text-ink tracking-[-0.02em]">Il nostro patto con te</h3>
+      </div>
+      <button onclick="closeModal('modalInfo')" class="btn-press w-9 h-9 rounded-full bg-white border border-[#E7DDD0] flex items-center justify-center text-stone-500 hover:text-ink"><i data-lucide="x" class="w-4 h-4"></i></button>
+    </div>
+    <div class="mt-7 space-y-5">
+      <div class="flex gap-4">
+        <div class="mono text-[11px] font-bold text-sage-700 pt-1">01</div>
+        <div>
+          <h4 class="text-[14px] font-bold text-ink">Fonti aperte &amp; grandi testate</h4>
+          <p class="text-[13px] leading-[1.82] text-stone-600 mt-1.5">Usiamo open data (CC BY 4.0, CC0, Public Domain), istituzioni pubbliche e testate internazionali, sempre con citazione e link diretto.</p>
+        </div>
+      </div>
+      <div class="flex gap-4">
+        <div class="mono text-[11px] font-bold text-sage-700 pt-1">02</div>
+        <div>
+          <h4 class="text-[14px] font-bold text-ink">Sintesi fluide, mai copia</h4>
+          <p class="text-[13px] leading-[1.82] text-stone-600 mt-1.5">Riscriviamo tutto con un tono scorrevole ed elegante. Citazioni brevi, contesto chiaro, nessuna riproduzione integrale.</p>
+        </div>
+      </div>
+      <div class="flex gap-4">
+        <div class="mono text-[11px] font-bold text-sage-700 pt-1">03</div>
+        <div>
+          <h4 class="text-[14px] font-bold text-ink">IA sempre dichiarata</h4>
+          <p class="text-[13px] leading-[1.82] text-stone-600 mt-1.5">Testi e audio assistiti sono etichettati. Una sola voce femminile italiana, calda e naturale. Nessuna clonazione di persone reali.</p>
+        </div>
+      </div>
+      <div class="flex gap-4">
+        <div class="mono text-[11px] font-bold text-sage-700 pt-1">04</div>
+        <div>
+          <h4 class="text-[14px] font-bold text-ink">Attribuzione strutturale</h4>
+          <p class="text-[13px] leading-[1.82] text-stone-600 mt-1.5">Testata, URL e licenza vivono dentro ogni card, non in fondo in piccolo.</p>
+        </div>
+      </div>
+      <div class="flex gap-4">
+        <div class="mono text-[11px] font-bold text-sage-700 pt-1">05</div>
+        <div>
+          <h4 class="text-[14px] font-bold text-ink">Sempre aggiornate</h4>
+          <p class="text-[13px] leading-[1.82] text-stone-600 mt-1.5">Il flusso si sincronizza in automatico e ti mostra cosa è nuovo, con orario di verifica.</p>
+        </div>
+      </div>
+    </div>
+    <button onclick="closeModal('modalInfo')" class="btn-press w-full mt-8 py-4 rounded-2xl bg-ink text-cream text-[14px] font-bold hover:bg-sage-700">Perfetto, grazie!</button>
+  </div>
+</div>
+
+<!-- MODAL: TRASCRIZIONE -->
+<div id="modalTranscript" class="hidden fixed inset-0 bg-[#0E2A20]/55 backdrop-blur-[3px] z-[70] flex items-center justify-center p-4 overflow-y-auto" onclick="if(event.target===this)closeModal('modalTranscript')">
+  <div class="modal-panel bg-cream w-full max-w-[640px] rounded-[28px] p-7 sm:p-9 shadow-[0_50px_100px_-30px_rgba(12,32,25,.7)] my-8">
+    <div class="flex items-start justify-between gap-4 pb-5 border-b border-[#EDE4D8]">
+      <div>
+        <div class="flex items-center gap-2 mb-2">
+          <span class="w-6 h-[2px] bg-sage-600 rounded-full"></span>
+          <span class="text-[10px] font-bold uppercase tracking-[.17em] text-sage-700">Testo completo</span>
+        </div>
+        <h3 class="serif-title text-[24px] leading-tight text-ink tracking-[-0.02em]">Trascrizione del briefing</h3>
+      </div>
+      <button onclick="closeModal('modalTranscript')" class="btn-press w-9 h-9 rounded-full bg-white border border-[#E7DDD0] flex items-center justify-center text-stone-500 hover:text-ink"><i data-lucide="x" class="w-4 h-4"></i></button>
+    </div>
+    <div id="transcriptFull" class="mt-6 text-[14px] leading-[1.95] text-stone-700 space-y-4 max-h-[52vh] overflow-y-auto pr-2"></div>
+    <div class="flex flex-wrap items-center gap-2.5 mt-6 pt-5 border-t border-[#EDE4D8]">
+      <span class="inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-mint text-sage-700 text-[10px] font-bold uppercase tracking-[.12em]"><i data-lucide="sparkles" class="w-3 h-3"></i> Sintesi originale</span>
+      <span class="inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-white border border-[#E7DDD0] text-stone-600 text-[10px] font-bold uppercase tracking-[.12em]"><i data-lucide="mic" class="w-3 h-3"></i> Voce sintetica dichiarata</span>
+      <button onclick="copyTranscript()" class="btn-press ml-auto inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-ink text-cream text-[12px] font-bold hover:bg-sage-700"><i data-lucide="copy" class="w-3.5 h-3.5"></i> Copia testo</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: ARTICOLO -->
+<div id="modalArticle" class="hidden fixed inset-0 bg-[#0E2A20]/60 backdrop-blur-[4px] z-[70] flex items-center justify-center p-4 overflow-y-auto" onclick="if(event.target===this)closeModal('modalArticle')">
+  <div class="modal-panel bg-cream w-full max-w-[640px] rounded-[28px] overflow-hidden shadow-[0_50px_100px_-30px_rgba(12,32,25,.7)] my-8">
+    <div id="articleHero" class="relative h-[220px] img-fallback overflow-hidden"></div>
+    <div class="p-7 sm:p-8">
+      <div id="articleMeta"></div>
+      <h3 id="articleTitle" class="serif-title text-[24px] leading-tight text-ink mt-3"></h3>
+      <p id="articleSummary" class="mt-4 text-[14.5px] leading-[1.9] text-stone-600"></p>
+      <div id="articleExtra" class="mt-5 rounded-2xl bg-white border border-[#E7DDD0] p-4 text-[12.5px] leading-relaxed text-stone-600"></div>
+      <div class="flex flex-wrap items-center gap-2.5 mt-6">
+        <a id="articleLink" href="#" target="_blank" rel="noopener" class="btn-press inline-flex items-center gap-2 px-6 py-3 rounded-full bg-ink text-cream text-[13px] font-bold hover:bg-sage-700">Vai alla fonte originale <i data-lucide="external-link" class="w-4 h-4"></i></a>
+        <button onclick="closeModal('modalArticle')" class="btn-press px-6 py-3 rounded-full bg-white border border-[#E7DDD0] text-[13px] font-bold text-stone-600">Chiudi</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 z-[90] pointer-events-none opacity-0 translate-y-[-16px] transition-all duration-500">
+  <div class="flex items-center gap-2.5 px-5 py-3.5 rounded-full bg-ink text-cream shadow-[0_28px_60px_-22px_rgba(12,32,25,.9)]">
+    <i data-lucide="check-circle-2" class="w-4 h-4 text-sage-300"></i>
+    <span id="toastText" class="text-[12.5px] font-semibold">Fatto!</span>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   VERA — home mista: briefing audio + card combinate
+   ============================================================ */
+
+const synth = window.speechSynthesis || null;
+
+/* ---------- TEMI ---------- */
+const TOPICS = [
+  {id:'esteri',  name:'Esteri',         icon:'globe-2'},
+  {id:'italia',  name:'Italia',         icon:'landmark'},
+  {id:'economia',name:'Economia',       icon:'trending-up'},
+  {id:'tech',    name:'Tech & Scienza', icon:'cpu'},
+  {id:'cultura', name:'Cultura',        icon:'clapperboard'},
+  {id:'sport',   name:'Sport',          icon:'trophy'}
+];
+
+/* ---------- SEZIONI (intestazioni progressive) ---------- */
+const SECTIONS = [
+  {id:'top',      num:'01', label:'Top stories',      icon:'flame',        accent:'clay',
+   title:'Le 5-10 notizie più importanti',
+   desc:'Le storie essenziali per capire la giornata in pochi minuti. Miste: open data, istituzioni e grandi testate.'},
+  {id:'esteri',   num:'02', label:'Esteri',           icon:'globe-2',      accent:'sage',
+   title:'Esteri & geopolitica',
+   desc:'Diplomazia, alleanze e scenari globali, raccontati con calma e con le fonti sempre citate.'},
+  {id:'italia',   num:'03', label:'Italia',           icon:'landmark',     accent:'sage',
+   title:'Politica, cronaca e società',
+   desc:'Decisioni pubbliche e vita quotidiana: cosa cambia davvero, senza allarmismi.'},
+  {id:'economia', num:'04', label:'Economia',         icon:'trending-up',  accent:'clay',
+   title:'Economia, mercati e aziende',
+   desc:'Listini, dati macro e imprese, spiegati in modo semplice, con numeri ufficiali e date.'},
+  {id:'tech',     num:'05', label:'Tech & Scienza',   icon:'cpu',          accent:'sage',
+   title:'Tecnologia, scienza e AI',
+   desc:'Ricerca e innovazione tra laboratori, imprese e istituzioni. Il futuro, in chiaro.'},
+  {id:'cultura',  num:'06', label:'Cultura',          icon:'clapperboard', accent:'clay',
+   title:'Cinema, musica, libri e spettacoli',
+   desc:'Storie leggere e ispiranti: festival, uscite, patrimonio e live.'},
+  {id:'sport',    num:'07', label:'Sport',            icon:'trophy',       accent:'sage',
+   title:'Le notizie sportive principali',
+   desc:'Risultati e grandi appuntamenti, con i numeri ufficiali in evidenza.'}
+];
+
+/* ---------- DATI ---------- */
+const IMG = {
+  clima:'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1200&q=72',
+  vento:'https://images.unsplash.com/photo-1466611653911-95081537e5b7?auto=format&fit=crop&w=1200&q=72',
+  finanza:'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=72',
+  citta:'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=1200&q=72',
+  terra:'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=72',
+  laptop:'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=72',
+  ai:'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=1200&q=70',
+  ufficio:'https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=1200&q=70',
+  team:'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=70',
+  cinema:'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1200&q=70',
+  diplomazia:'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=1200&q=70',
+  bosco:'https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?auto=format&fit=crop&w=1200&q=70',
+  viaggio:'https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=1200&q=70',
+  studio:'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=70',
+  londra:'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=1200&q=70',
+  giustizia:'https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?auto=format&fit=crop&w=1200&q=70',
+  bus:'https://images.unsplash.com/photo-1474487548417-781cb71495f3?auto=format&fit=crop&w=1200&q=70',
+  scuola:'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=70',
+  grafici:'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=70',
+  trading:'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=1200&q=70',
+  fabbrica:'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&w=1200&q=70',
+  documenti:'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=1200&q=70',
+  ecommerce:'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1200&q=70',
+  codice:'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=1200&q=70',
+  techteam:'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1200&q=70',
+  ghiacciaio:'https://images.unsplash.com/photo-1516339901601-2e1b62dc0c45?auto=format&fit=crop&w=1200&q=70',
+  spazio:'https://images.unsplash.com/photo-1517976487492-5750f3195933?auto=format&fit=crop&w=1200&q=70',
+  arte:'https://images.unsplash.com/photo-1499426600726-a950358acf16?auto=format&fit=crop&w=1200&q=70',
+  libri:'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=1200&q=70',
+  concerto:'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=1200&q=70',
+  calcio:'https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=1200&q=70',
+  stadio:'https://images.unsplash.com/photo-1522778119026-d647f0596c20?auto=format&fit=crop&w=1200&q=70',
+  f1:'https://images.unsplash.com/photo-1541348263662-e068662d82af?auto=format&fit=crop&w=1200&q=70',
+  atletica:'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=1200&q=70',
+  tennis:'https://images.unsplash.com/photo-1554068865-24cecd4e34b8?auto=format&fit=crop&w=1200&q=70',
+  calciofem:'https://images.unsplash.com/photo-1560272564-c83b66b1ad12?auto=format&fit=crop&w=1200&q=70',
+  giornali:'https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=1200&q=75'
+};
+
+let _id = 0;
+function N(cat, topic, type, source, region, title, summary, url, license, minutesAgo, image){
+  return {id:++_id, cat, topic, type, source, region, title, summary, url, license, minutesAgo, image, isNew: minutesAgo < 18, saved:false};
+}
+
+const FEED_DATA = [
+/* ---------- TOP STORIES ---------- */
+N('top','esteri','editorial','BBC World','UK','Vertice sul clima: intesa sul percorso 2035, con tappe verificabili','Buone notizie dall’Europa: dopo una lunga trattativa, i Paesi hanno concordato un percorso climatico più morbido e trasparente. Stessi obiettivi di fondo, ma con tappe intermedie e revisioni regolari, per non lasciare indietro nessuno.','https://www.bbc.com/news','Copyright · citazione',12,IMG.clima),
+N('top','economia','open','EEA · Agenzia Europea','EU','Emissioni UE giù dell’8%: il calo più forte di sempre','L’Agenzia europea per l’ambiente conferma un record incoraggiante: le emissioni industriali scendono dell’8%, grazie soprattutto a un’elettricità più pulita. Resta il nodo dell’industria pesante, ma la direzione è quella giusta.','https://www.eea.europa.eu','CC BY 4.0',26,IMG.vento),
+N('top','economia','editorial','Reuters','INT','Mercati distesi in apertura: spread sotto i 135 punti','Mattinata serena per le Borse europee, con lo spread sotto controllo e aste seguite con fiducia. Le banche centrali invitano comunque alla prudenza: saranno i prossimi dati a decidere il ritmo dei tassi.','https://www.reuters.com','Copyright · citazione',41,IMG.finanza),
+N('top','italia','open','ISTAT · Fiducia','IT','Fiducia di famiglie e imprese in lieve risalita','Piccoli segnali positivi: la fiducia risale tra consumatori e imprese, trainata da servizi e costruzioni. Il clima resta prudente, ma la tendenza fa ben sperare per i prossimi mesi.','https://www.istat.it','Open Data · CC BY',58,IMG.ufficio),
+N('top','esteri','open','Eurostat · Flash','EU','Occupazione UE al 75,4%: nuovo massimo, traina il Sud Europa','L’aggiornamento lampo di Eurostat racconta un mercato del lavoro solido, con la partecipazione femminile ai massimi. Una nota gentile in un autunno pieno di incertezze.','https://ec.europa.eu/eurostat','CC BY 4.0',74,IMG.team),
+N('top','tech','editorial','AP News','US','AI Act europeo: al via la fase operativa tra imprese e PA','Entra nel vivo l’attuazione delle regole europee sull’intelligenza artificiale: trasparenza dei modelli, valutazione dei rischi e supporto alle PMI. Un percorso graduale, per innovare in sicurezza senza frenare la ricerca.','https://apnews.com','Copyright · citazione',96,IMG.ai),
+N('top','tech','open','NASA / Copernicus','US-EU','Oceani a 21,1°C di media: il segnale del clima che cambia','I dati NASA e Copernicus concordano: gli oceani continuano ad accumulare calore, con valori record. Non è solo un numero: significa correnti più intense e stagioni meno prevedibili, da monitorare con attenzione.','https://climate.copernicus.eu','Public Domain / CC BY',118,IMG.terra),
+N('top','esteri','editorial','Le Monde','FR','Francia: sindacati in piazza, ma il dialogo resta aperto','Grande partecipazione allo sciopero su pensioni e salari, con disagi a trasporti e scuole. Il governo lascia la porta aperta al confronto e il calendario parlamentare resta in attesa di proposte concrete.','https://www.lemonde.fr','Copyright · citazione',142,IMG.citta),
+N('top','cultura','editorial','ANSA','IT','Venezia annuncia una Mostra più aperta: più sale in città e biglietti giovani','Un’edizione pensata per avvicinare: proiezioni diffuse, incontri con gli autori e prezzi leggeri per gli under 30. Il cinema torna a farsi passeggiata.','https://www.ansa.it','Copyright · citazione',166,IMG.cinema),
+N('top','italia','editorial','Il Sole 24 Ore','IT','Manovra e PNRR: al centro fisco più leggero e cantieri più veloci','Il dibattito economico si concentra su due parole: alleggerire il fisco e accelerare i progetti del PNRR. Le scelte finali dipenderanno dalle stime autunnali, con l’obiettivo di dare ossigeno a famiglie e imprese.','https://www.ilsole24ore.com','Copyright · citazione',190,IMG.laptop),
+
+/* ---------- ESTERI ---------- */
+N('esteri','esteri','editorial','Al Jazeera','MENA','Spiragli umanitari: i mediatori restano al tavolo','Proseguono con discrezione i colloqui per una pausa umanitaria. Restano delicati gli accessi sicuri e le verifiche indipendenti, ma il fatto che il dialogo continui è già un segnale importante.','https://www.aljazeera.com','Copyright · citazione',48,IMG.diplomazia),
+N('esteri','esteri','editorial','The Guardian','UK','Nord Europa: ampia esercitazione congiunta, prova di coordinamento','Migliaia di militari coinvolti in manovre nel Nord Europa. Gli analisti la leggono come una prova di coordinamento e deterrenza, mentre la sicurezza collettiva torna centrale.','https://www.theguardian.com','Copyright · citazione',152,IMG.bosco),
+N('esteri','esteri','open','UN Data','INT','281 milioni di persone vivono lontano dal proprio Paese','Il nuovo aggiornamento ONU racconta una mobilità globale in crescita, spesso legata a lavoro e studio. Dietro i numeri, storie di scelta e necessità che chiedono politiche lungimiranti e umane.','https://data.un.org','Open Data · CC BY',210,IMG.viaggio),
+N('esteri','esteri','editorial','El País','ES','America Latina al voto: economia e sicurezza al centro','La campagna entra nella fase calda, con coalizioni che ridisegnano le alleanze. A decidere saranno portafoglio, sicurezza e servizi pubblici: temi che toccano la vita di tutti i giorni.','https://elpais.com','Copyright · citazione',268,IMG.studio),
+N('esteri','esteri','editorial','DW · Deutsche Welle','DE','Berlino accelera sull’industria verde, con fondi e semplificazioni','Un pacchetto per sostenere la transizione delle imprese energivore: incentivi mirati e procedure più rapide. L’obiettivo dichiarato è tenere insieme competitività e obiettivi climatici.','https://www.dw.com','Copyright · citazione',330,IMG.fabbrica),
+N('esteri','esteri','editorial','Nikkei Asia','ASIA','Semiconduttori: le catene di fornitura cercano nuove rotte','Investimenti e accordi si moltiplicano tra Asia, Europa e Stati Uniti. La parola d’ordine è diversificare, per ridurre le dipendenze e rendere la produzione più resiliente.','https://asia.nikkei.com','Copyright · citazione',412,IMG.codice),
+N('esteri','esteri','editorial','Politico Europe','EU','Parlamento UE: nuova maggioranza sui dossier energia','Sui temi energetici si muove un’alleanza inedita tra gruppi diversi. Il voto di questa settimana darà il tono ai negoziati sui prezzi e sulle rinnovabili.','https://www.politico.eu','Copyright · citazione',520,IMG.londra),
+N('esteri','esteri','open','Euronews · Dati UE','EU','Balcani occidentali: l’allargamento supera un altro passaggio','Un nuovo capitolo si apre nel percorso di avvicinamento all’Unione. Restano riforme da completare, ma il calendario diventa più concreto e verificabile.','https://www.euronews.com','Open Data · citazione',640,IMG.diplomazia),
+
+/* ---------- ITALIA ---------- */
+N('italia','italia','editorial','ANSA','IT','Giustizia più veloce: al via l’iter della riforma in commissione','Primi passi in Parlamento per snellire i tempi dei processi. Il testo è stato limato con emendamenti condivisi e ora le categorie chiedono una cosa sola: tempi certi per cittadini e imprese.','https://www.ansa.it','Copyright · citazione',34,IMG.giustizia),
+N('italia','italia','open','ISTAT · Lavoro','IT','Lavoro: occupati su dello 0,4%, più contratti stabili','Buone notizie dal mercato del lavoro: crescono gli occupati e soprattutto i contratti a tempo indeterminato. Restano forti le differenze tra Nord e Sud e tra generazioni: la sfida è rendere la crescita più equa.','https://www.istat.it','Open Data · CC BY',112,IMG.team),
+N('italia','italia','editorial','Corriere della Sera','IT','Bus elettrici e metro più connesse: 12 miliardi per i trasporti','Un piano per rinnovare le flotte locali con mezzi elettrici e migliorare gli scambi tra bus, metro e bici. Le città chiedono fondi pluriennali per programmare con serenità.','https://www.corriere.it','Copyright · citazione',196,IMG.bus),
+N('italia','italia','editorial','Rai News','IT','Scuola: orientamento dal terzo anno con tutor e mini-stage','Una scuola più vicina al futuro: percorsi di orientamento con tutor e brevi esperienze sul campo. Si parte con 300 istituti pilota, per aiutare ogni studente a trovare la sua strada.','https://www.rainews.it','Copyright · citazione',244,IMG.scuola),
+N('italia','italia','open','ISPRA · Ambiente','IT','Clima in Italia: più eventi estremi, serve adattamento locale','Il rapporto invita a prepararsi: ondate di calore e piogge intense aumentano. La buona notizia? Molte città si stanno attrezzando con verde urbano e piani anti-alluvione. La prevenzione funziona.','https://www.isprambiente.gov.it','Open Data · CC BY',300,IMG.clima),
+N('italia','italia','editorial','Il Post','IT','Autonomia differenziata: il nodo dei livelli essenziali','Il confronto si concentra sui costi standard e sulle garanzie per i territori. La domanda di fondo resta la stessa: come assicurare servizi uguali a chi vive al Nord e a chi vive al Sud.','https://www.ilpost.it','Copyright · citazione',368,IMG.giustizia),
+N('italia','italia','editorial','Sky TG24','IT','Sanità, nuovo piano per le liste d’attesa: più visite serali','Recuperare terreno sui tempi di attesa: agende serali, Cup unico e più specialisti a chiamata. Le Regioni chiedono risorse stabili per rendere il piano sostenibile.','https://tg24.sky.it','Copyright · citazione',452,IMG.ufficio),
+N('italia','italia','editorial','La Repubblica','IT','Turismo: estate da record, ma cresce il tema dell’overtourism','Numeri alti in quasi tutte le regioni, con città d’arte sotto pressione. Si lavora su flussi più distribuiti nei mesi e nelle aree meno conosciute.','https://www.repubblica.it','Copyright · citazione',560,IMG.citta),
+
+/* ---------- ECONOMIA ---------- */
+N('economia','economia','open','Eurostat','EU','Inflazione UE al 2,3%: energia più leggera, servizi ancora vivaci','L’inflazione scende piano piano, grazie all’energia meno cara. I servizi restano la voce più vivace del carrello. Nel complesso, il potere d’acquisto tira un piccolo sospiro di sollievo.','https://ec.europa.eu/eurostat','CC BY 4.0',66,IMG.grafici),
+N('economia','economia','editorial','Financial Times','UK','Banche centrali prudenti: tassi fermi fino a fine trimestre','Nessuna fretta sui tagli: si attendono altri dati su lavoro e prezzi prima di muoversi. Per mutui e prestiti significa stabilità a breve, con possibili aperture più avanti.','https://www.ft.com','Copyright · citazione',184,IMG.trading),
+N('economia','economia','editorial','Bloomberg','INT','Manifattura italiana all’estero: terzo anno di crescita','Meccanica, componentistica auto e agroalimentare trainano gli investimenti oltre confine. Un segnale di fiducia: le nostre imprese competono bene e reinvestono, anche in anni non facili.','https://www.bloomberg.com','Copyright · citazione',232,IMG.fabbrica),
+N('economia','economia','open','Banca d’Italia','IT','Crediti deteriorati sotto il 3%: sistema solido, occhio ai variabili','La fotografia è rassicurante: la qualità del credito tiene. L’invito è a sostenere famiglie e piccole imprese più esposte ai tassi variabili, con soluzioni su misura.','https://www.bancaditalia.it','Open Data · CC BY',288,IMG.documenti),
+N('economia','economia','open','BCE · Bollettino','EU','BCE: credito in ripresa, ma le PMI chiedono ossigeno','Il bollettino segnala una lenta ripresa del credito. Le piccole imprese restano caute e chiedono procedure semplici e costi chiari. La BCE promette ascolto e gradualità.','https://www.ecb.europa.eu','Open Data · CC BY',346,IMG.finanza),
+N('economia','economia','editorial','Il Sole 24 Ore','IT','PMI e export digitale: +9% di piccole imprese online all’estero','Sempre più piccole imprese vendono oltre confine grazie alle piattaforme digitali. Una crescita gentile, fatta di artigianato, design e cibo di qualità.','https://www.ilsole24ore.com','Copyright · citazione',398,IMG.ecommerce),
+N('economia','economia','editorial','The Economist','INT','Prezzo del gas e inverno europeo: scorte piene, nervi saldi','Gli stoccaggi sono in buona forma e i mercati reagiscono con calma. Resta l’attenzione sulle forniture e sui consumi industriali nei mesi più freddi.','https://www.economist.com','Copyright · citazione',470,IMG.vento),
+N('economia','economia','open','OCSE','INT','Produttività: il divario che pesa sulla crescita','Il rapporto confronta i Paesi e indica una strada: formazione, tecnologia e competenze. Un invito a investire sul capitale umano più che sulle scorciatoie.','https://www.oecd.org','Open Data · CC BY',580,IMG.ufficio),
+
+/* ---------- TECH & SCIENZA ---------- */
+N('tech','tech','open','ISTAT · Brevetti','IT','Brevetti AI in accelerazione: l’Italia riduce il gap con l’UE','Ottimo segnale: crescono le domande di brevetto legate all’intelligenza artificiale, soprattutto in sanità, manifattura e finanza. Il divario con la media europea si assottiglia.','https://www.istat.it','Open Data · CC BY',82,IMG.codice),
+N('tech','tech','editorial','Wired','INT','Aziende e AI on-premise: i dati sensibili restano in casa','Ospedali e banche scelgono modelli gestiti internamente per proteggere i dati delicati. La sfida ora è renderli trasparenti, verificabili e meno energivori.','https://www.wired.com','Copyright · citazione',218,IMG.techteam),
+N('tech','tech','open','ESA','EU','Ghiacciai alpini sotto osservazione: mappe aperte per la ricerca','I nuovi satelliti restituiscono mappe dettagliate di spessore e fusione dei ghiacciai. Dati liberi per università e centri di ricerca: un aiuto prezioso per capire e agire in tempo.','https://www.esa.int','CC BY-SA 3.0',296,IMG.ghiacciaio),
+N('tech','tech','editorial','Nature','INT','Fusione nucleare: 22 minuti di plasma, un piccolo record','Nel tokamak europeo il plasma resta stabile per 22 minuti: un passo incoraggiante. La strada verso l’energia in rete è ancora lunga, ma la direzione fa sognare.','https://www.nature.com','Copyright · citazione',384,IMG.spazio),
+N('tech','tech','open','Copernicus · Salute','EU','Qualità dell’aria: città europee in miglioramento, ma non ovunque','I satelliti mostrano progressi in molte città, grazie a zone a basse emissioni e trasporti puliti. Restano criticità nelle pianure trafficate: servono verde e alternative all’auto.','https://atmosphere.copernicus.eu','CC BY 4.0',448,IMG.clima),
+N('tech','tech','editorial','MIT Technology Review','INT','Chip neuromorfici: calcolo potente con pochissima energia','I nuovi processori imitano il funzionamento dei neuroni e consumano una frazione dell’energia tradizionale. Interessanti per sensori, robotica e dispositivi indossabili.','https://www.technologyreview.com','Copyright · citazione',540,IMG.ai),
+N('tech','tech','editorial','Science','INT','Vaccini mRNA: nuovi studi su stabilità e conservazione','La ricerca punta a formulazioni più stabili, facili da conservare anche senza catena del freddo estrema. Un passo utile per la distribuzione nei Paesi meno attrezzati.','https://www.science.org','Copyright · citazione',626,IMG.laptop),
+N('tech','tech','editorial','Ars Technica','INT','Batterie allo stato solido: primi test su larga scala','Le nuove celle promettono più autonomia e ricariche rapide, con meno rischio di surriscaldamento. Restano da risolvere costi e produzione su volumi.','https://arstechnica.com','Copyright · citazione',712,IMG.fabbrica),
+
+/* ---------- CULTURA ---------- */
+N('cultura','cultura','editorial','La Repubblica','IT','Festival del cinema: spazio ai nuovi autori, tema il “ritorno”','Diciotto opere prime in concorso e una forte presenza europea. Il filo conduttore è il ritorno: alle radici, alle persone, ai luoghi. Una selezione fresca che promette scoperte.','https://www.repubblica.it','Copyright · citazione',104,IMG.cinema),
+N('cultura','cultura','open','Google Arts & Culture','INT','12mila opere in alta risoluzione: il museo entra in casa tua','Musei e archivi europei pubblicano migliaia di dipinti, foto e manoscritti liberamente esplorabili. Puoi zoomare su ogni dettaglio e scaricare dataset aperti per studiare e creare.','https://artsandculture.google.com','CC BY 4.0',256,IMG.arte),
+N('cultura','cultura','editorial','AP News','US','Musei aperti di sera gratis per gli under 25','Una rete di musei sperimenta aperture serali gratuite per i giovani. L’idea è semplice e bella: rendere la cultura un’abitudine serale, tra amici, senza barriere di prezzo.','https://apnews.com','Copyright · citazione',322,IMG.arte),
+N('cultura','cultura','editorial','Rolling Stone','INT','Musica dal vivo da record: +12% di pubblico in Europa','I tour riempiono arene e festival, con attenzione alla sostenibilità: palchi a basso impatto e viaggi condivisi. La voglia di stare insieme, dal vivo, non si ferma.','https://www.rollingstone.com','Copyright · citazione',406,IMG.concerto),
+N('cultura','cultura','editorial','El País · Cultura','ES','Libri: torna il piacere delle librerie di quartiere','Piccole librerie indipendenti in crescita, tra club di lettura e presentazioni intime. Un ritorno alla lentezza che piace molto ai lettori più giovani, a caccia di consigli veri.','https://elpais.com/cultura','Copyright · citazione',492,IMG.libri),
+N('cultura','cultura','editorial','Variety','INT','Serie italiane: le piattaforme puntano su storie locali','Nuovi progetti tra Napoli, Roma e il Nord-Est, con autori emergenti e cast misti. La scommessa è raccontare l’Italia contemporanea a un pubblico internazionale.','https://variety.com','Copyright · citazione',574,IMG.cinema),
+N('cultura','cultura','editorial','ANSA · Cultura','IT','Patrimonio: restauri e siti UNESCO, un piano decennale','Un programma di manutenzione programmata per ridurre i rischi e rendere i luoghi più accessibili. Cultura e sicurezza viaggiano insieme.','https://www.ansa.it','Copyright · citazione',668,IMG.arte),
+N('cultura','cultura','editorial','Il Post','IT','Podcast: l’audio che cresce, tra informazione e racconto','Sempre più ascoltatori scelgono l’audio per informarsi mentre si muovono. Le produzioni curate e con una voce riconoscibile sono quelle che fidelizzano di più.','https://www.ilpost.it','Copyright · citazione',756,IMG.libri),
+
+/* ---------- SPORT ---------- */
+N('sport','sport','editorial','La Gazzetta dello Sport','IT','Big match deciso al 78’: finisce 2-1, vetta a un punto','Partita bloccata per un’ora, poi un contropiede fulmineo la risolve: 2-1 e classifica cortissima. Il campionato resta apertissimo e il prossimo turno profuma di spareggio.','https://www.gazzetta.it','Copyright · citazione',24,IMG.calcio),
+N('sport','sport','open','UEFA','EU','Champions da record: 3,2 miliardi di spettatori in stagione','I dati ufficiali raccontano una Champions sempre più globale, con boom di visioni da smartphone. Il calcio si guarda ovunque: in viaggio, sul divano, insieme agli amici.','https://www.uefa.com','Open Data · citazione',176,IMG.stadio),
+N('sport','sport','editorial','Formula 1','INT','Pole da brividi: miglior tempo stagionale per 82 millesimi','Qualifica tiratissima decisa da un soffio. Ora tutte le attenzioni vanno alla gara lunga, con caldo e strategie tutte da inventare.','https://www.formula1.com','Copyright · citazione',268,IMG.f1),
+N('sport','sport','editorial','CONI','IT','Verso i Giochi: 380 azzurri e record di discipline','La delegazione italiana cresce e si diversifica, con tante discipline tecniche in evidenza. Al via la preparazione con tappe europee: il sogno a cinque cerchi è già cominciato.','https://www.coni.it','Copyright · citazione',352,IMG.atletica),
+N('sport','sport','editorial','Sky Sport · Tennis','IT','Tennis: serata magica, l’Italia vola in semifinale','Una rimonta da raccontare: sotto di un set, arriva la reazione con break decisivo nel terzo. Il pubblico impazzisce e ora sognare è d’obbligo.','https://sport.sky.it','Copyright · citazione',438,IMG.tennis),
+N('sport','sport','open','FIGC · Report','IT','Calcio femminile: +24% di tesserate, stadi più pieni','Il report racconta una crescita dolce e costante: più bambine, più squadre, più pubblico. Il movimento sorride e guarda avanti.','https://www.figc.it','Open Data · citazione',524,IMG.calciofem),
+N('sport','sport','editorial','ESPN','US','NBA: mercato vivace, scambi che ridisegnano le gerarchie','Un mercato ricco di mosse, con squadre che si rinforzano in vista dei playoff. Le analisi parlano di un equilibrio mai così aperto.','https://www.espn.com','Copyright · citazione',612,IMG.stadio),
+N('sport','sport','editorial','ANSA · Sport','IT','Atletica: record italiano nei 400, cronometro da applausi','Prestazione netta e senza polemiche, con un margine di crescita ancora interessante. Il calendario verso i grandi appuntamenti si fa promettente.','https://www.ansa.it','Copyright · citazione',700,IMG.atletica)
+];
+
+/* ---------- CLOUD FONTI ---------- */
+const SOURCES_CLOUD = [
+  {n:'BBC',o:false},{n:'Le Monde',o:false},{n:'El País',o:false},{n:'Reuters',o:false},
+  {n:'AP',o:false},{n:'The Guardian',o:false},{n:'Al Jazeera',o:false},{n:'DW',o:false},
+  {n:'Financial Times',o:false},{n:'Bloomberg',o:false},{n:'The Economist',o:false},
+  {n:'Nikkei Asia',o:false},{n:'Politico Europe',o:false},{n:'Euronews',o:false},
+  {n:'ANSA',o:false},{n:'Il Sole 24 Ore',o:false},{n:'Corriere della Sera',o:false},
+  {n:'La Repubblica',o:false},{n:'Rai News',o:false},{n:'Sky TG24',o:false},{n:'Il Post',o:false},
+  {n:'Nature',o:false},{n:'Science',o:false},{n:'Wired',o:false},{n:'MIT Technology Review',o:false},
+  {n:'Ars Technica',o:false},{n:'Rolling Stone',o:false},{n:'Variety',o:false},
+  {n:'La Gazzetta dello Sport',o:false},{n:'Sky Sport',o:false},{n:'ESPN',o:false},{n:'Formula 1',o:false},
+  {n:'EEA',o:true},{n:'Eurostat',o:true},{n:'ISTAT',o:true},{n:'NASA',o:true},{n:'Copernicus',o:true},
+  {n:'ESA',o:true},{n:'ISPRA',o:true},{n:'UN Data',o:true},{n:'OCSE',o:true},
+  {n:'Banca d’Italia',o:true},{n:'BCE',o:true},{n:'UEFA',o:true},{n:'FIGC',o:true},
+  {n:'Google Arts & Culture',o:true}
+];
+
+/* ============================================================
+   STATO
+   ============================================================ */
+let selectedSectors = new Set(['esteri','italia','economia','tech','cultura','sport']);
+let activeFilter = 'all';
+let searchQuery = '';
+let sortMode = 'recent';
+let bookmarks = new Set();
+let bookmarksOnly = false;
+let lastSync = Date.now();
+let autoRefresh = true;
+let autoTimer = null;
+let miniDismissed = false;
+let currentFilteredByType = null;
+let lastAnnouncedId = null;
+
+const player = {
+  playing:false, index:0, segs:[], cum:[], total:0, elapsed:0,
+  segStart:null, raf:null, utter:null, voice:null, muted:false, mode:'speech'
+};
+
+/* ============================================================
+   UTILI
+   ============================================================ */
+function escapeHtml(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function formatTime(sec){
+  sec = Math.max(0, Math.round(sec||0));
+  const m = Math.floor(sec/60).toString().padStart(2,'0');
+  const s = (sec%60).toString().padStart(2,'0');
+  return m+':'+s;
+}
+function timeAgo(min){
+  if(min < 1) return 'ora';
+  if(min < 60) return Math.round(min)+' min fa';
+  const h = min/60;
+  if(h < 24) return Math.round(h)+' ore fa';
+  const d = h/24;
+  if(d < 7) return Math.round(d)+' g fa';
+  return Math.round(d/7)+' sett fa';
+}
+function toast(msg){
+  const t = document.getElementById('toast');
+  document.getElementById('toastText').textContent = msg;
+  t.classList.remove('opacity-0','translate-y-[-16px]');
+  t.classList.add('opacity-100','translate-y-0');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(()=>{
+    t.classList.add('opacity-0','translate-y-[-16px]');
+    t.classList.remove('opacity-100','translate-y-0');
+  }, 2600);
+}
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+function renderSourceCloud(){
+  const el = document.getElementById('sourceCloud');
+  el.innerHTML = SOURCES_CLOUD.map(s => `
+    <span class="marquee-src px-4 py-2.5 rounded-full border text-[11.5px] font-semibold ${s.o ? 'bg-mint border-sage-200 text-sage-700' : 'bg-white border-[#EBE2D6] text-stone-600'}">
+      ${escapeHtml(s.n)}${s.o ? ' <span class="text-[9px] font-bold opacity-70">· OPEN</span>' : ''}
+    </span>`).join('');
+}
+
+function renderSectors(){
+  const c = document.getElementById('sectorChipsContainer');
+  c.innerHTML = '';
+  TOPICS.forEach(sec => {
+    const active = selectedSectors.has(sec.id);
+    const b = document.createElement('button');
+    b.className = 'chip inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-[12.5px] font-bold border ' +
+      (active ? 'active' : 'bg-white text-stone-700 border-[#E7DDD0] hover:border-sage-300 shadow-sm');
+    b.onclick = () => toggleSector(sec.id);
+    b.innerHTML = `<span class="chip-dot w-[7px] h-[7px] rounded-full ${active ? 'bg-sage-300' : 'bg-stone-300'}"></span>
+      <i data-lucide="${sec.icon}" class="w-[15px] h-[15px]"></i>${sec.name}`;
+    c.appendChild(b);
+  });
+  lucide.createIcons();
+}
+
+function updateSectorCount(){
+  document.getElementById('sectorCount').textContent = selectedSectors.size;
+}
+
+function cardHTML(item){
+  const isOpen = item.type === 'open';
+  const isNew = item.minutesAgo < 18;
+  const saved = bookmarks.has(item.id);
+  const typeChip = isOpen
+    ? `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/92 backdrop-blur border border-sage-200 text-[9.5px] font-extrabold uppercase tracking-[.1em] text-sage-700"><i data-lucide="database" class="w-3 h-3"></i>Open data</span>`
+    : `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/92 backdrop-blur border border-[#EFE3D3] text-[9.5px] font-extrabold uppercase tracking-[.1em] text-clay"><i data-lucide="newspaper" class="w-3 h-3"></i>Rassegna</span>`;
+
+  return `
+  <article class="card reveal group relative flex flex-col rounded-[24px] bg-white border border-[#EDE3D5] shadow-soft overflow-hidden cursor-pointer" onclick="openArticle(${item.id})">
+    <div class="relative h-[168px] img-fallback overflow-hidden">
+      <img class="card-img w-full h-full object-cover" src="${item.image}" alt="" loading="lazy" onerror="this.style.display='none'">
+      <div class="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/35 to-transparent"></div>
+      <div class="absolute top-3 left-3">${typeChip}</div>
+      ${isNew ? `<span class="absolute top-3 right-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-clay text-white text-[9.5px] font-extrabold uppercase tracking-[.1em] new-pulse"><span class="w-1.5 h-1.5 rounded-full bg-white"></span>Nuova</span>` : ''}
+      <div class="absolute bottom-3 left-3 flex items-center gap-2 text-[10.5px] font-bold text-white/95">
+        <i data-lucide="radio" class="w-3 h-3"></i>${escapeHtml(item.source)}
+        <span class="opacity-60">·</span><span class="opacity-90">${escapeHtml(item.region)}</span>
+      </div>
+    </div>
+
+    <div class="flex-1 flex flex-col p-5">
+      <h3 class="serif-title text-[17.5px] leading-[1.28] tracking-[-0.01em] text-ink group-hover:text-sage-800 transition-colors">${escapeHtml(item.title)}</h3>
+      <p class="mt-2.5 text-[12.8px] leading-[1.78] text-stone-500 line-clamp-3">${escapeHtml(item.summary)}</p>
+
+      <div class="mt-4 pt-4 border-t border-[#F2EADD] flex items-center justify-between gap-3">
+        <div class="flex items-center gap-2 min-w-0">
+          <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full ${isOpen ? 'bg-mint text-sage-700 border border-sage-200' : 'bg-sand text-stone-600 border border-[#E9DFD0]'} text-[9.5px] font-bold whitespace-nowrap">
+            <i data-lucide="${isOpen ? 'scale' : 'copyright'}" class="w-3 h-3"></i>${escapeHtml(item.license)}
+          </span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="mono text-[10.5px] text-stone-400 whitespace-nowrap" data-time-id="${item.id}">${timeAgo(item.minutesAgo)}</span>
+          <button onclick="toggleBookmark(event, ${item.id})" aria-label="Salva" class="btn-press w-8 h-8 rounded-full border ${saved ? 'bg-ink border-ink text-cream' : 'bg-white border-[#E7DDD0] text-stone-500 hover:text-sage-700 hover:border-sage-300'} flex items-center justify-center">
+            <i data-lucide="bookmark" class="w-3.5 h-3.5"></i>
+          </button>
+          <span class="w-8 h-8 rounded-full bg-sage-50 border border-sage-100 flex items-center justify-center text-sage-700">
+            <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 arrow-slide"></i>
+          </span>
+        </div>
+      </div>
+    </div>
+  </article>`;
+}
+
+function itemsForSection(sec){
+  let items = FEED_DATA.filter(f => f.cat === sec.id);
+  // temi attivi (personalizzazione)
+  items = items.filter(f => selectedSectors.has(f.topic));
+  // filtro tipo
+  if (activeFilter.startsWith('type:')) {
+    const t = activeFilter.split(':')[1];
+    items = items.filter(f => f.type === t);
+  }
+  // ricerca
+  if (searchQuery.trim()) {
+    const q = searchQuery.trim().toLowerCase();
+    items = items.filter(f =>
+      (f.title + ' ' + f.summary + ' ' + f.source + ' ' + f.topic + ' ' + f.license).toLowerCase().includes(q)
+    );
+  }
+  // salvati
+  if (bookmarksOnly) items = items.filter(f => bookmarks.has(f.id));
+
+  // ordinamento
+  if (sortMode === 'top') {
+    items.sort((a,b) => (a.cat === 'top' ? -1 : 0) - (b.cat === 'top' ? -1 : 0) || a.minutesAgo - b.minutesAgo);
+  } else if (sortMode === 'open') {
+    items.sort((a,b) => (a.type === 'open' ? -1 : 0) - (b.type === 'open' ? -1 : 0) || a.minutesAgo - b.minutesAgo);
+  } else {
+    items.sort((a,b) => a.minutesAgo - b.minutesAgo);
+  }
+  return items;
+}
+
+function sectionHTML(sec, items){
+  const accent = sec.accent === 'clay' ? 'text-clay' : 'text-sage-700';
+  const bar = sec.accent === 'clay' ? 'bg-clay' : 'bg-sage-600';
+  if (!items.length) {
+    return `
+    <div class="reveal">
+      <div class="flex items-center gap-3 mb-3">
+        <span class="mono text-[10px] font-bold ${accent}">${sec.num}</span>
+        <span class="w-6 h-[2px] ${bar} rounded-full"></span>
+        <span class="text-[10.5px] font-bold uppercase tracking-[.19em] ${accent}">${sec.label}</span>
+      </div>
+      <div class="rounded-[24px] border border-dashed border-[#E3D7C6] bg-white/60 p-8 text-center">
+        <p class="text-[13px] text-stone-500">Nessuna notizia con i filtri attivi in questa sezione. Prova ad allargare i temi o a togliere la ricerca.</p>
+      </div>
+    </div>`;
+  }
+  const max = sec.id === 'top' ? 10 : items.length;
+  const list = items.slice(0, max);
+  return `
+  <div class="reveal">
+    <div class="flex flex-wrap items-end justify-between gap-4 mb-5">
+      <div class="max-w-[720px]">
+        <div class="flex items-center gap-3 mb-2.5">
+          <span class="mono text-[10px] font-bold ${accent}">${sec.num}</span>
+          <span class="w-6 h-[2px] ${bar} rounded-full"></span>
+          <span class="text-[10.5px] font-bold uppercase tracking-[.19em] ${accent}">${sec.label}</span>
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white border border-[#EDE3D5] text-[10px] font-bold text-stone-500">
+            <i data-lucide="${sec.icon}" class="w-3 h-3"></i>${list.length} notizie
+          </span>
+        </div>
+        <h3 class="serif-title text-[clamp(1.55rem,3.3vw,2.25rem)] leading-[1.12] tracking-[-0.025em] text-ink">${sec.title}</h3>
+        <p class="mt-2 text-[13.5px] leading-[1.75] text-stone-500">${sec.desc}</p>
+      </div>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      ${list.map(cardHTML).join('')}
+    </div>
+  </div>`;
+}
+
+function renderFeed(){
+  const container = document.getElementById('feedSections');
+  let secs = SECTIONS;
+  if (activeFilter.startsWith('cat:')) {
+    const id = activeFilter.split(':')[1];
+    secs = SECTIONS.filter(s => s.id === id);
+  }
+  const html = secs.map(s => {
+    const items = itemsForSection(s);
+    return sectionHTML(s, items);
+  }).join('');
+  container.innerHTML = html;
+  lucide.createIcons();
+  observeReveals(container);
+  checkNewest();
+}
+
+/* ---------- TICKER ---------- */
+function renderTicker(){
+  const track = document.getElementById('tickerTrack');
+  const items = FEED_DATA.slice().sort((a,b)=>a.minutesAgo-b.minutesAgo).slice(0,16);
+  const build = () => items.map(it => `
+    <span class="inline-flex items-center gap-2 whitespace-nowrap cursor-pointer hover:text-sage-700 transition-colors" onclick="openArticle(${it.id})">
+      <span class="w-1.5 h-1.5 rounded-full ${it.type === 'open' ? 'bg-sage-500' : 'bg-clay'}"></span>
+      <span class="font-bold text-ink">${escapeHtml(it.source)}</span>
+      <span class="text-stone-500">${escapeHtml(it.title)}</span>
+      <span class="mono text-[10.5px] text-stone-400" data-time-id="${it.id}">${timeAgo(it.minutesAgo)}</span>
+    </span>`).join('');
+  track.innerHTML = build() + build();
+}
+
+/* ---------- TIME LABELS ---------- */
+function updateTimeLabels(){
+  document.querySelectorAll('[data-time-id]').forEach(el => {
+    const item = FEED_DATA.find(f => f.id === Number(el.dataset.timeId));
+    if (item) el.textContent = timeAgo(item.minutesAgo);
+  });
+}
+
+/* ============================================================
+   INTERAZIONI LISTA
+   ============================================================ */
+function toggleSector(id){
+  if (selectedSectors.has(id)) selectedSectors.delete(id); else selectedSectors.add(id);
+  renderSectors();
+  updateSectorCount();
+  renderFeed();
+  buildBriefing();
+  if (player.playing) stopPlayback();
+  updateBriefingCopy();
+}
+function selectAllSectors(){
+  selectedSectors = new Set(TOPICS.map(t => t.id));
+  renderSectors(); updateSectorCount(); renderFeed(); buildBriefing(); updateBriefingCopy();
+  toast('Tutti i temi attivi');
+}
+function clearSectors(){
+  selectedSectors = new Set();
+  renderSectors(); updateSectorCount(); renderFeed(); buildBriefing(); updateBriefingCopy();
+  toast('Temi azzerati: scegline qualcuno');
+}
+function filterFeed(f){
+  activeFilter = f;
+  document.querySelectorAll('.filter-pill').forEach(b => {
+    b.classList.toggle('active', b.dataset.filter === f);
+  });
+  renderFeed();
+}
+function onSearch(v){ searchQuery = v; renderFeed(); }
+function onSortChange(v){ sortMode = v; renderFeed(); }
+function toggleBookmarksOnly(){
+  bookmarksOnly = !bookmarksOnly;
+  const b = document.getElementById('savedBtn');
+  b.classList.toggle('bg-ink', bookmarksOnly);
+  b.classList.toggle('text-cream', bookmarksOnly);
+  b.classList.toggle('border-ink', bookmarksOnly);
+  renderFeed();
+  toast(bookmarksOnly ? 'Solo le notizie salvate' : 'Tutte le notizie');
+}
+function toggleBookmark(e, id){
+  e.stopPropagation();
+  if (bookmarks.has(id)) bookmarks.delete(id); else bookmarks.add(id);
+  document.getElementById('savedCount').textContent = bookmarks.size;
+  renderFeed();
+  toast(bookmarks.has(id) ? 'Salvata tra le tue notizie' : 'Rimossa dai salvati');
+}
+function showAllFeeds(){
+  activeFilter = 'all'; searchQuery = ''; bookmarksOnly = false;
+  selectedSectors = new Set(TOPICS.map(t => t.id));
+  document.getElementById('searchInput').value = '';
+  document.querySelectorAll('.filter-pill').forEach(b => b.classList.toggle('active', b.dataset.filter === 'all'));
+  renderSectors(); updateSectorCount(); renderFeed(); buildBriefing(); updateBriefingCopy();
+  toast('Flusso riordinato per te');
+}
+function checkNewest(){
+  const newest = FEED_DATA.slice().sort((a,b)=>a.minutesAgo-b.minutesAgo)[0];
+  if (newest && newest.id !== lastAnnouncedId && newest.isNew) {
+    lastAnnouncedId = newest.id;
+  }
+}
+
+/* ============================================================
+   ARTICOLO
+   ============================================================ */
+function openArticle(id){
+  const it = FEED_DATA.find(f => f.id === id);
+  if (!it) return;
+  const isOpen = it.type === 'open';
+  document.getElementById('articleHero').innerHTML =
+    `<img class="w-full h-full object-cover" src="${it.image}" alt="" onerror="this.style.display='none'">`;
+  document.getElementById('articleMeta').innerHTML = `
+    <div class="flex flex-wrap items-center gap-2">
+      <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full ${isOpen ? 'bg-mint border border-sage-200 text-sage-700' : 'bg-peach border border-[#F2DDCB] text-clay'} text-[10px] font-extrabold uppercase tracking-[.12em]">
+        <i data-lucide="${isOpen ? 'database' : 'newspaper'}" class="w-3 h-3"></i>${isOpen ? 'Open data' : 'Rassegna'}
+      </span>
+      <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-[#E7DDD0] text-[10px] font-bold text-stone-600">
+        <i data-lucide="radio" class="w-3 h-3"></i>${escapeHtml(it.source)} · ${escapeHtml(it.region)}
+      </span>
+      <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-[#E7DDD0] text-[10px] font-bold text-stone-600">
+        <i data-lucide="clock" class="w-3 h-3"></i>${timeAgo(it.minutesAgo)}
+      </span>
+    </div>`;
+  document.getElementById('articleTitle').textContent = it.title;
+  document.getElementById('articleSummary').textContent = it.summary;
+  document.getElementById('articleExtra').innerHTML = `
+    <div class="flex items-start gap-2"><i data-lucide="scale" class="w-4 h-4 text-sage-600 mt-[2px] shrink-0"></i>
+    <div><strong class="text-ink">Licenza:</strong> ${escapeHtml(it.license)}<br>
+    <span class="text-stone-500">Questa è una sintesi originale VERA: brevi citazioni, contesto chiaro, link alla fonte qui sotto.</span></div></div>`;
+  document.getElementById('articleLink').href = it.url;
+  openModal('modalArticle');
+  lucide.createIcons();
+}
+
+/* ============================================================
+   BRIEFING — costruzione del testo
+   ============================================================ */
+const CONNECTORS = {
+  esteri:'Sul fronte internazionale, ',
+  italia:'Qui in Italia, ',
+  economia:'Passiamo all’economia: ',
+  tech:'Lato tecnologia e scienza, ',
+  cultura:'Un po’ di cultura: ',
+  sport:'Chiudiamo con lo sport: '
+};
+
+function buildBriefing(){
+  const pool = FEED_DATA
+    .filter(f => f.cat === 'top' && selectedSectors.has(f.topic))
+    .sort((a,b) => a.minutesAgo - b.minutesAgo);
+
+  const chosen = (pool.length ? pool : FEED_DATA.filter(f => selectedSectors.has(f.topic)).sort((a,b)=>a.minutesAgo-b.minutesAgo)).slice(0, 7);
+
+  const segs = [];
+  segs.push({ text:'Partiamo da quello che oggi vale davvero la pena sapere.', item:null });
+
+  chosen.forEach((it, i) => {
+    const conn = (i === 0) ? '' : (CONNECTORS[it.topic] || 'Intanto, ');
+    segs.push({ text: conn + it.summary, item: it.id });
+  });
+
+  segs.push({ text:'Questo è quello che oggi valeva la pena sapere. Ci sentiamo domani.', item:null });
+
+  player.segs = segs;
+  player.index = 0;
+  player.elapsed = 0;
+  player.segStart = null;
+  player.cum = [];
+  let acc = 0;
+  segs.forEach(s => {
+    acc += Math.max(1.4, s.text.length / 15.5);
+    player.cum.push(acc);
+  });
+  player.total = acc;
+
+  renderTranscript();
+  updateProgressUI();
+  document.getElementById('durationLabel').textContent = formatTime(player.total);
+  document.getElementById('timeTotal').textContent = formatTime(player.total);
+}
+
+function renderTranscript(){
+  const preview = document.getElementById('transcriptPreview');
+  const full = document.getElementById('transcriptFull');
+
+  preview.innerHTML = player.segs.slice(0, 4).map((s, i) =>
+    `<span class="seg" data-seg="${i}">${escapeHtml(s.text)}</span> `).join('');
+  full.innerHTML = player.segs.map((s, i) =>
+    `<p><span class="seg" data-seg="${i}">${escapeHtml(s.text)}</span></p>`).join('');
+}
+
+function highlightSegment(i){
+  document.querySelectorAll('.seg.speaking').forEach(el => el.classList.remove('speaking'));
+  const t = document.querySelector(`.seg[data-seg="${i}"]`);
+  if (t) t.classList.add('speaking');
+}
+
+function updateBriefingCopy(){
+  const n = player.segs.length ? player.segs.length - 2 : 0;
+  const el = document.getElementById('briefingStatus');
+  const names = [...selectedSectors].map(id => (TOPICS.find(t => t.id === id) || {}).name).filter(Boolean);
+  el.innerHTML = `
+    <i data-lucide="info" class="w-4 h-4 text-sage-600 shrink-0"></i>
+    <span class="text-[12px] text-stone-600 leading-relaxed">
+      ${n ? `Briefing pronto con <strong class="text-ink">${n} notizie</strong>` : 'Seleziona almeno un tema per il briefing'}
+      ${names.length ? ' · temi: ' + names.join(', ') : ''}. Le card sotto seguono gli stessi temi.
+    </span>`;
+  lucide.createIcons();
+}
+
+/* ============================================================
+   VOCE — una sola voce, dichiarata
+   ============================================================ */
+function pickVoice(){
+  if (!synth) return null;
+  const voices = synth.getVoices();
+  if (!voices.length) return null;
+  const it = voices.filter(v => /^it([-_]|$)/i.test(v.lang || ''));
+  const pool = it.length ? it : voices;
+  const prefer = ['sara','alice','federica','elsa','silvia','giulia','emma','helena','paulina','italiano'];
+  for (const p of prefer) {
+    const found = pool.find(v => (v.name || '').toLowerCase().includes(p));
+    if (found) return found;
+  }
+  return pool[0];
+}
+function loadVoices(){
+  if (!synth) return;
+  player.voice = pickVoice();
+  if (synth.onvoiceschanged !== undefined) {
+    synth.onvoiceschanged = () => { player.voice = pickVoice(); };
+  }
+}
+
+function speakChunk(i){
+  if (!synth) { return; }
+  const seg = player.segs[i];
+  if (!seg) { finishPlayback(); return; }
+  const u = new SpeechSynthesisUtterance(seg.text);
+  u.lang = 'it-IT';
+  if (player.voice) u.voice = player.voice;
+  u.rate = 0.98;
+  u.pitch = 1.06;
+  u.volume = player.muted ? 0 : 1;
+  u.onend = () => {
+    if (!player.playing) return;
+    player.elapsed = player.cum[i];
+    const next = i + 1;
+    if (next >= player.segs.length) { finishPlayback(); return; }
+    player.index = next;
+    player.segStart = performance.now();
+    highlightSegment(next);
+    updateProgressUI();
+    speakChunk(next);
+  };
+  u.onerror = () => {
+    if (!player.playing) return;
+    // fallback morbido: avanza col timer
+    const next = i + 1;
+    if (next >= player.segs.length) { finishPlayback(); return; }
+    player.index = next;
+    player.segStart = performance.now();
+    speakChunk(next);
+  };
+  player.utter = u;
+  synth.speak(u);
+}
+
+function progressLoop(now){
+  if (!player.playing) return;
+  if (player.segStart == null) player.segStart = now;
+  const base = player.index > 0 ? player.cum[player.index - 1] : 0;
+  const dur = Math.max(1, player.cum[player.index] - base);
+  const frac = Math.min((now - player.segStart) / 1000 / dur, 0.995);
+  player.elapsed = base + dur * frac;
+  updateProgressUI();
+  player.raf = requestAnimationFrame(progressLoop);
+}
+
+function updateProgressUI(){
+  const pct = player.total > 0 ? (player.elapsed / player.total) * 100 : 0;
+  document.getElementById('progressFill').style.width = pct.toFixed(2) + '%';
+  document.getElementById('miniProgressFill').style.width = pct.toFixed(2) + '%';
+  document.getElementById('timeCurrent').textContent = formatTime(player.elapsed);
+  document.getElementById('miniTime').textContent = formatTime(player.elapsed);
+}
+
+function setPlayingUI(on){
+  const btn = document.getElementById('playBtn');
+  const icon = document.getElementById('playIcon');
+  const mini = document.getElementById('miniPlayIcon');
+  const wave = document.getElementById('waveVisualizer');
+  btn.classList.toggle('playing', on);
+  wave.classList.toggle('is-playing', on);
+  const setIcon = (el, name) => { if (el) { el.setAttribute('data-lucide', name); } };
+  setIcon(icon, on ? 'pause' : 'play');
+  setIcon(mini, on ? 'pause' : 'play');
+  icon.classList.toggle('ml-[3px]', !on);
+  mini.classList.toggle('ml-[2px]', !on);
+  lucide.createIcons();
+  const miniWrap = document.getElementById('miniPlayer');
+  if (on) miniWrap.classList.remove('hidden-down');
+}
+
+function startPlayback(fromIndex){
+  player.playing = true;
+  player.index = fromIndex || player.index || 0;
+  player.segStart = performance.now();
+  setPlayingUI(true);
+  highlightSegment(player.index);
+  if (player.raf) cancelAnimationFrame(player.raf);
+  player.raf = requestAnimationFrame(progressLoop);
+
+  if (synth) {
+    synth.cancel();
+    player.mode = 'speech';
+    player.voice = player.voice || pickVoice();
+    setTimeout(() => speakChunk(player.index), 60);
+  } else {
+    // simulazione senza sintesi
+    player.mode = 'sim';
+    const dur = Math.max(1, player.cum[player.index] - (player.index > 0 ? player.cum[player.index - 1] : 0));
+    setTimeout(() => {
+      if (!player.playing) return;
+      player.elapsed = player.cum[player.index];
+      const next = player.index + 1;
+      if (next >= player.segs.length) { finishPlayback(); return; }
+      player.index = next;
+      player.segStart = performance.now();
+      startPlayback.nextTick = true;
+      speakSim();
+    }, dur * 1000);
+  }
+}
+
+function speakSim(){
+  if (!player.playing || player.mode !== 'sim') return;
+  highlightSegment(player.index);
+  const base = player.index > 0 ? player.cum[player.index - 1] : 0;
+  const dur = Math.max(1, player.cum[player.index] - base);
+  setTimeout(() => {
+    if (!player.playing) return;
+    player.elapsed = player.cum[player.index];
+    const next = player.index + 1;
+    if (next >= player.segs.length) { finishPlayback(); return; }
+    player.index = next;
+    player.segStart = performance.now();
+    speakSim();
+  }, dur * 1000);
+}
+
+function pausePlayback(){
+  player.playing = false;
+  if (player.raf) cancelAnimationFrame(player.raf);
+  if (synth && synth.speaking) synth.pause();
+  setPlayingUI(false);
+}
+
+function stopPlayback(){
+  player.playing = false;
+  if (player.raf) cancelAnimationFrame(player.raf);
+  if (synth) { synth.cancel(); }
+  document.querySelectorAll('.seg.speaking').forEach(el => el.classList.remove('speaking'));
+  setPlayingUI(false);
+}
+
+function finishPlayback(){
+  player.playing = false;
+  if (player.raf) cancelAnimationFrame(player.raf);
+  player.elapsed = player.total;
+  updateProgressUI();
+  document.querySelectorAll('.seg.speaking').forEach(el => el.classList.remove('speaking'));
+  setPlayingUI(false);
+}
+
+function togglePlay(){
+  if (!player.segs.length) buildBriefing();
+  if (player.playing) { pausePlayback(); return; }
+  if (player.elapsed >= player.total - 0.3) { player.elapsed = 0; player.index = 0; }
+  if (synth && synth.paused && player.elapsed > 0 && player.index > 0) {
+    player.playing = true;
+    setPlayingUI(true);
+    player.segStart = performance.now();
+    player.raf = requestAnimationFrame(progressLoop);
+    synth.resume();
+    return;
+  }
+  startPlayback(player.index);
+}
+
+function seekBy(sec){
+  if (!player.segs.length) return;
+  const target = Math.max(0, Math.min(player.total - 0.5, player.elapsed + sec));
+  let idx = player.cum.findIndex(c => c > target);
+  if (idx < 0) idx = player.segs.length - 1;
+  stopPlayback();
+  player.index = idx;
+  player.elapsed = idx > 0 ? player.cum[idx - 1] : 0;
+  updateProgressUI();
+  highlightSegment(idx);
+  if (player.playing) startPlayback(idx);
+}
+
+/* trascinamento sulla barra */
+function initProgressTrack(){
+  const bind = (trackId, isMini) => {
+    const track = document.getElementById(trackId);
+    if (!track) return;
+    const move = (e) => {
+      const r = track.getBoundingClientRect();
+      const x = (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
+      const pct = Math.max(0, Math.min(1, x / r.width));
+      const target = pct * player.total;
+      let idx = player.cum.findIndex(c => c > target);
+      if (idx < 0) idx = player.segs.length - 1;
+      stopPlayback();
+      player.index = idx;
+      player.elapsed = idx > 0 ? player.cum[idx - 1] : 0;
+      updateProgressUI();
+      highlightSegment(idx);
+    };
+    let dragging = false;
+    track.addEventListener('mousedown', e => { dragging = true; move(e); });
+    window.addEventListener('mousemove', e => { if (dragging) move(e); });
+    window.addEventListener('mouseup', () => { dragging = false; });
+    track.addEventListener('touchstart', e => { move(e); }, {passive:true});
+    track.addEventListener('touchmove', e => { move(e); }, {passive:true});
+  };
+  bind('progressTrack');
+  bind('miniProgressTrack');
+}
+
+function regenerateBriefing(){
+  stopPlayback();
+  buildBriefing();
+  updateBriefingCopy();
+  document.getElementById('briefingUpdated').textContent = 'ora';
+  toast('Briefing rigenerato con calma');
+}
+
+function playVoiceSample(){
+  if (!synth) { toast('La voce non è disponibile su questo dispositivo'); return; }
+  synth.cancel();
+  const u = new SpeechSynthesisUtterance('Ciao. Prenditi un momento: ti racconto con calma cosa sta succedendo, scegliendo quello che conta davvero per te.');
+  u.lang = 'it-IT';
+  const v = player.voice || pickVoice();
+  if (v) u.voice = v;
+  u.rate = 0.98;
+  u.pitch = 1.06;
+  synth.speak(u);
+  const wave = document.getElementById('sampleWave');
+  wave.style.opacity = '1';
+  u.onend = () => { wave.style.opacity = '.35'; };
+  toast('Voce unica · sintetica dichiarata');
+}
+
+/* ============================================================
+   MODALI / TOAST
+   ============================================================ */
+function openModal(id){ document.getElementById(id).classList.remove('hidden'); document.body.style.overflow='hidden'; }
+function closeModal(id){ document.getElementById(id).classList.add('hidden'); document.body.style.overflow=''; }
+function copyTranscript(){
+  const text = player.segs.map(s => s.text).join('\n\n');
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => toast('Trascrizione copiata')).catch(() => toast('Copia non riuscita'));
+  } else {
+    toast('Copia non supportata dal browser');
+  }
+}
+function subscribeSuccess(form){
+  form.reset();
+  toast('Fatto! Ti arriva domani mattina ☕');
+}
+function closeMiniPlayer(){
+  miniDismissed = true;
+  document.getElementById('miniPlayer').classList.add('hidden-down');
+}
+
+/* ============================================================
+   AGGIORNAMENTI LIVE
+   ============================================================ */
+function refreshFeeds(){
+  lastSync = Date.now();
+  // nuova notizia in arrivo: la più vecchia torna fresca
+  const pool = FEED_DATA.filter(f => f.cat !== 'top');
+  const pick = pool[Math.floor(Math.random() * pool.length)];
+  if (pick) {
+    pick.minutesAgo = 0.4;
+    pick.isNew = true;
+    toast('Nuova notizia · ' + pick.source);
+  }
+  FEED_DATA.forEach(f => { if (f !== pick) f.minutesAgo += 1.6; });
+  renderFeed();
+  renderTicker();
+  updateSyncLabels();
+}
+
+function updateSyncLabels(){
+  const label = 'agg. ' + new Date(lastSync).toLocaleTimeString('it-IT', {hour:'2-digit', minute:'2-digit'});
+  document.getElementById('lastSyncLabel').textContent = label.replace('agg. ','');
+  document.getElementById('footerSync').textContent = label.replace('agg. ','');
+  document.getElementById('lastCheckInline').textContent = label.replace('agg. ','');
+  document.getElementById('briefingUpdated').textContent = label.replace('agg. ','');
+}
+
+function toggleAutoRefresh(){
+  autoRefresh = !autoRefresh;
+  document.getElementById('autoToggle').classList.toggle('on', autoRefresh);
+  document.getElementById('autoLabel').textContent = autoRefresh
+    ? 'Attivo · controllo ogni 60 secondi'
+    : 'In pausa · riattivalo quando vuoi';
+  toast(autoRefresh ? 'Aggiornamento automatico attivo' : 'Aggiornamento automatico in pausa');
+}
+function startAutoRefresh(){
+  if (autoTimer) clearInterval(autoTimer);
+  autoTimer = setInterval(() => {
+    if (!autoRefresh) return;
+    FEED_DATA.forEach(f => { f.minutesAgo += 1; });
+    if (Math.random() > 0.6) {
+      const pool = FEED_DATA.filter(f => f.cat !== 'top');
+      const pick = pool[Math.floor(Math.random() * pool.length)];
+      pick.minutesAgo = 0.3;
+      pick.isNew = true;
+      lastSync = Date.now();
+      renderFeed();
+      renderTicker();
+      updateSyncLabels();
+      toast('Aggiornato · ' + pick.source);
+    } else {
+      updateTimeLabels();
+    }
+  }, 60000);
+}
+
+/* ============================================================
+   UI GENERALE
+   ============================================================ */
+function startClock(){
+  const el = document.getElementById('clockLabel');
+  const tick = () => { el.textContent = new Date().toLocaleTimeString('it-IT', {hour:'2-digit', minute:'2-digit'}); };
+  tick();
+  setInterval(tick, 20000);
+}
+
+function initObservers(){
+  if (typeof IntersectionObserver === 'undefined') {
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
+    window.__io = null;
+    return;
+  }
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:0.08, rootMargin:'0px 0px -5% 0px'});
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  window.__io = io;
+}
+function observeReveals(scope){
+  const io = window.__io;
+  const nodes = (scope || document).querySelectorAll('.reveal:not(.in)');
+  if (!io) { nodes.forEach(el => el.classList.add('in')); return; }
+  nodes.forEach(el => io.observe(el));
+}
+
+function initHeaderScroll(){
+  const progress = document.getElementById('scrollProgress');
+  let ticking = false;
+  function onScroll(){
+    const y = window.scrollY;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.width = (max > 0 ? (y/max)*100 : 0) + '%';
+
+    document.querySelectorAll('.parallax-img').forEach(img => {
+      const r = img.getBoundingClientRect();
+      if (r.bottom > -200 && r.top < window.innerHeight + 200) {
+        const offset = (r.top - window.innerHeight/2) / 26;
+        img.style.transform = 'translate3d(0,' + Math.max(-28, Math.min(28, offset)) + 'px,0) scale(1.08)';
+      }
+    });
+
+    const mini = document.getElementById('miniPlayer');
+    if (mini && !miniDismissed) {
+      if (player.playing || player.elapsed > 2) {
+        mini.classList.remove('hidden-down');
+      } else {
+        const bp = document.getElementById('briefing-player');
+        if (bp) {
+          const r = bp.getBoundingClientRect();
+          if (r.bottom < 0) mini.classList.remove('hidden-down');
+          else mini.classList.add('hidden-down');
+        }
+      }
+    }
+    ticking = false;
+  }
+  window.addEventListener('scroll', () => {
+    if (!ticking) { ticking = true; requestAnimationFrame(onScroll); }
+  }, {passive:true});
+  onScroll();
+}
+
+function initMagnetic(){
+  if (!window.matchMedia('(hover:hover)').matches) return;
+  document.querySelectorAll('.magnetic').forEach(el => {
+    el.addEventListener('mousemove', (e) => {
+      const r = el.getBoundingClientRect();
+      const x = e.clientX - r.left - r.width/2;
+      const y = e.clientY - r.top - r.height/2;
+      el.style.transform = 'translate(' + (x*0.1) + 'px,' + (y*0.14) + 'px)';
+    });
+    el.addEventListener('mouseleave', () => { el.style.transform = 'translate(0,0)'; });
+  });
+}
+
+function initHeroSpotlight(){
+  const hero = document.querySelector('.hero-glow');
+  const section = document.getElementById('briefing');
+  if (!hero || !section) return;
+  let raf = null;
+  section.addEventListener('mousemove', (e) => {
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      const r = section.getBoundingClientRect();
+      hero.style.setProperty('--mx', ((e.clientX - r.left)/r.width*100) + '%');
+      hero.style.setProperty('--my', ((e.clientY - r.top)/r.height*100) + '%');
+      raf = null;
+    });
+  });
+}
+
+function initCountUp(){
+  const els = document.querySelectorAll('[data-count]');
+  if (!els.length) return;
+  if (typeof IntersectionObserver === 'undefined') {
+    els.forEach(el => { el.textContent = el.dataset.count + (el.dataset.suffix||''); });
+    return;
+  }
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const el = entry.target;
+      const target = parseFloat(el.dataset.count);
+      const suffix = el.dataset.suffix || '';
+      const dur = 1400;
+      const start = performance.now();
+      const step = (now) => {
+        const p = Math.min((now - start)/dur, 1);
+        const eased = 1 - Math.pow(1-p, 3);
+        el.textContent = Math.round(target*eased) + suffix;
+        if (p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+      io.unobserve(el);
+    });
+  }, {threshold:0.4});
+  els.forEach(el => io.observe(el));
+}
+
+/* ============================================================
+   AVVIO
+   ============================================================ */
+function init(){
+  lucide.createIcons();
+  renderSourceCloud();
+  renderSectors();
+  updateSectorCount();
+  buildBriefing();
+  renderFeed();
+  renderTicker();
+  updateBriefingCopy();
+  startClock();
+  updateSyncLabels();
+  initObservers();
+  initHeaderScroll();
+  initMagnetic();
+  initHeroSpotlight();
+  initProgressTrack();
+  initCountUp();
+  loadVoices();
+  startAutoRefresh();
+
+  setInterval(updateTimeLabels, 15000);
+  setInterval(() => { if (!player.playing) updateSyncLabels(); }, 60000);
+
+  window.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+    if (e.code === 'Space') { e.preventDefault(); togglePlay(); }
+    if (e.key === 'ArrowRight') seekBy(10);
+    if (e.key === 'ArrowLeft') seekBy(-10);
+    if (e.key === 'Escape') { closeModal('modalInfo'); closeModal('modalTranscript'); closeModal('modalArticle'); }
+  });
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+</script>
+</body>
+</html>
