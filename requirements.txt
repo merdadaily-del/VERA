@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+httpx
+feedparser
+rapidfuzz
+pydantic
+groq
+google-genai
+sqlalchemy
+psycopg[binary]
