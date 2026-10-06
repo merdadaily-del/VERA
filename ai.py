@@ -1,6 +1,5 @@
 import json
 import os
-import time
 from typing import Any
 
 from groq import Groq
@@ -10,7 +9,7 @@ from google.genai import types
 
 GROQ_MODEL_FAST = os.getenv("GROQ_MODEL_FAST", "openai/gpt-oss-20b")
 GROQ_MODEL_DEEP = os.getenv("GROQ_MODEL_DEEP", "openai/gpt-oss-120b")
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
 
 
 class AIError(Exception):
@@ -19,21 +18,26 @@ class AIError(Exception):
 
 def _json_from_text(text: str) -> dict[str, Any]:
     text = (text or "").strip()
+
     if text.startswith("```"):
         text = text.strip("`")
         if text.startswith("json"):
             text = text[4:].strip()
+
     try:
         return json.loads(text)
     except Exception as exc:
         raise AIError(f"Risposta AI non valida come JSON: {exc}") from exc
 
 
-def _groq(prompt: str, model: str, max_tokens: int = 1600) -> dict[str, Any]:
+def _groq(prompt: str, model: str, max_tokens: int = 1200) -> dict[str, Any]:
     key = os.getenv("GROQ_API_KEY")
+
     if not key:
         raise AIError("GROQ_API_KEY non configurata")
+
     client = Groq(api_key=key)
+
     response = client.chat.completions.create(
         model=model,
         temperature=0.1,
@@ -43,22 +47,31 @@ def _groq(prompt: str, model: str, max_tokens: int = 1600) -> dict[str, Any]:
                 "role": "system",
                 "content": (
                     "Sei il motore editoriale di VERA. "
-                    "Non inventare fatti. Usa esclusivamente le fonti fornite. "
+                    "Non inventare fatti. "
+                    "Usa esclusivamente le fonti fornite. "
+                    "Distingui fatti, dichiarazioni, accuse e interpretazioni. "
                     "Rispondi SOLO con JSON valido."
                 ),
             },
-            {"role": "user", "content": prompt},
+            {
+                "role": "user",
+                "content": prompt,
+            },
         ],
         response_format={"type": "json_object"},
     )
+
     return _json_from_text(response.choices[0].message.content)
 
 
-def _gemini(prompt: str, max_tokens: int = 1600) -> dict[str, Any]:
+def _gemini(prompt: str, max_tokens: int = 1200) -> dict[str, Any]:
     key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+
     if not key:
         raise AIError("GEMINI_API_KEY/GOOGLE_API_KEY non configurata")
+
     client = genai.Client(api_key=key)
+
     response = client.models.generate_content(
         model=GEMINI_MODEL,
         contents=prompt,
@@ -68,6 +81,7 @@ def _gemini(prompt: str, max_tokens: int = 1600) -> dict[str, Any]:
             response_mime_type="application/json",
         ),
     )
+
     return _json_from_text(response.text)
 
 
@@ -75,37 +89,61 @@ def generate_json(prompt: str, deep: bool = False) -> dict[str, Any]:
     """
     Provider principale: Groq.
     Fallback automatico: Gemini.
-    Se entrambi falliscono, solleva AIError: il backend non inventa una rassegna.
     """
+
     groq_model = GROQ_MODEL_DEEP if deep else GROQ_MODEL_FAST
 
     try:
         return _groq(prompt, groq_model)
+
     except Exception as groq_error:
+
         try:
             return _gemini(prompt)
+
         except Exception as gemini_error:
+
             raise AIError(
-                f"Groq fallito ({groq_error}); Gemini fallback fallito ({gemini_error})"
+                f"Groq fallito ({groq_error}); "
+                f"Gemini fallback fallito ({gemini_error})"
             ) from gemini_error
 
 
+def _compact_sources(sources: list[dict[str, Any]], max_sources: int = 6) -> list[dict[str, Any]]:
+    """
+    Riduce il materiale inviato al modello.
+    Non serve mandare decine di articoli quasi identici.
+    """
+
+    compact = []
+
+    for article in sources[:max_sources]:
+        compact.append({
+            "id": article["id"],
+            "outlet": article["outlet"],
+            "published": article["published"],
+            "title": article["title"][:500],
+            "summary": article.get("summary", "")[:700],
+            "url": article["link"],
+        })
+
+    return compact
+
+
 def verify_event(event: dict[str, Any]) -> dict[str, Any]:
-    sources = event["articles"]
-    source_text = "\n\n".join(
-        f"SOURCE_ID={a['id']}\nTESTATA={a['outlet']}\nDATA={a['published']}\nTITOLO={a['title']}\nDESCRIZIONE={a['summary'][:1200]}\nURL={a['link']}"
-        for a in sources
-    )
+
+    sources = _compact_sources(event["articles"])
 
     prompt = f"""
 VERIFICA EDITORIALE VERA.
 
-Devi verificare un singolo evento giornalistico usando SOLO le fonti sotto.
-Non usare conoscenze esterne.
+Devi verificare un singolo evento giornalistico usando SOLO le fonti fornite.
 
 Regole:
+
+- non usare conoscenze esterne;
 - una notizia non è confermata solo perché compare molte volte;
-- se più testate sembrano riprendere la stessa agenzia/origine, non contarle come conferme indipendenti;
+- più testate che riprendono la stessa agenzia/origine non valgono come conferme indipendenti;
 - distingui FATTO, DICHIARAZIONE, ACCUSA e INTERPRETAZIONE;
 - non colmare buchi con supposizioni;
 - se le fonti sono in conflitto, dichiaralo;
@@ -118,59 +156,66 @@ EVENTO:
 {json.dumps({
     "title": event["title"],
     "category": event["category"],
-    "articles": sources
 }, ensure_ascii=False)}
 
 FONTI:
-{source_text}
+{json.dumps(sources, ensure_ascii=False)}
 
-Restituisci ESATTAMENTE:
+Restituisci ESATTAMENTE questo JSON:
+
 {{
   "status": "CONFIRMED|REPORTED|UNVERIFIED",
   "confidence": 0,
-  "confirmed_facts": ["..."],
-  "reported_claims": ["..."],
-  "contradictions": ["..."],
-  "important_uncertainties": ["..."],
-  "independent_source_ids": ["..."],
-  "reason": "..."
+  "confirmed_facts": [],
+  "reported_claims": [],
+  "contradictions": [],
+  "important_uncertainties": [],
+  "independent_source_ids": [],
+  "reason": ""
 }}
 """
+
     return generate_json(prompt, deep=True)
 
 
-def build_briefing(events: list[dict[str, Any]], interests: list[str]) -> dict[str, Any]:
+def build_briefing(
+    events: list[dict[str, Any]],
+    interests: list[str]
+) -> dict[str, Any]:
+
     evidence = []
-    for e in events:
+
+    # Massimo 8 eventi nella rassegna finale.
+    for event in events[:8]:
+
+        sources = _compact_sources(
+            event["articles"],
+            max_sources=4
+        )
+
         evidence.append({
-            "event_id": e["id"],
-            "title": e["title"],
-            "category": e["category"],
-            "verification": e.get("verification", {}),
-            "sources": [
-                {
-                    "id": a["id"],
-                    "outlet": a["outlet"],
-                    "published": a["published"],
-                    "title": a["title"],
-                    "link": a["link"],
-                    "summary": a["summary"][:1200],
-                }
-                for a in e["articles"]
-            ],
+            "event_id": event["id"],
+            "title": event["title"],
+            "category": event["category"],
+            "verification": event.get("verification", {}),
+            "sources": sources,
         })
 
     prompt = f"""
 SEI VERA, una rassegna stampa intelligente e personalizzata.
 
-Interessi dell'utente: {", ".join(interests) if interests else "tutti"}
+Interessi dell'utente:
+{", ".join(interests) if interests else "tutti"}
 
 Crea una rassegna composta SOLO dagli eventi forniti.
-Non inventare informazioni e non usare fatti esterni.
+
+Non inventare informazioni.
+Non usare fatti esterni.
 Non riprodurre frasi dei giornali.
-Non scrivere come un aggregatore di titoli.
+Non scrivere come un semplice aggregatore di titoli.
 
 Per ogni evento selezionato:
+
 1. spiega cosa è successo;
 2. spiega perché conta;
 3. indica cosa è cambiato o cosa succede ora;
@@ -178,11 +223,10 @@ Per ogni evento selezionato:
 5. attribuisci esplicitamente le affermazioni non confermate;
 6. usa solo le fonti associate all'evento.
 
-Se un evento è UNVERIFIED, non presentarlo come fatto.
-Privilegia eventi importanti e materialmente nuovi.
-Non scegliere una notizia solo perché ha molte fonti duplicate.
+Privilegia gli eventi più importanti e realmente nuovi.
 
-Restituisci JSON:
+Restituisci SOLO JSON:
+
 {{
   "headline": "titolo della rassegna",
   "intro": "breve apertura",
@@ -203,4 +247,5 @@ Restituisci JSON:
 EVENTI:
 {json.dumps(evidence, ensure_ascii=False)}
 """
+
     return generate_json(prompt, deep=True)
